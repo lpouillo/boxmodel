@@ -1,12 +1,15 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 ''' 
+isotopic box model
+
 Programme permettant de calculer les delta finaux pour les RBC en fonction des variations
 du flux diet-plasma et le fractionnement a l'alimentation
 '''
-
+import pprint as PP
 from scipy.integrate import odeint
 from random import gauss
 from pylab import *
+import pydot as P
 
 # Definition de la fonction d'evolution
 def evol_ratio(ratio,t):
@@ -21,24 +24,48 @@ def evol_ratio(ratio,t):
 		rationew[ii]= influx - outflux
 	return rationew;
 
+def plot_state(boxes, ratios, data_flux, i_mass, i_flux):
+	colors = {"diet": "#BBFFB5", "plasma": "#FFC66D", "RBC": "#BA0400", 
+			"liver": "#93BB8F", "urine": "#FBFF93", "feces": "#BF9285", "menses": "#FF0600"}
+	shapes = {"diet": "rectangle", "plasma": "ellipse", "RBC": "ellipse", 
+			"liver": "ellipse", "urine": "rectangle", "feces": "rectangle", "menses": "rectangle"}
+	
+	i_ratio = 0
+	for ratio in ratios:
+		graph = P.Dot(graph_type='digraph', fontname="Verdana", ratio = "1")
+		
+		i_box = 0
+		for box in boxes:
+			node_box = P.Node(box, style="filled", label = box+'\n '+str(ratio[i_box]),
+				fillcolor=colors[box], shape = shapes[box])
+			i_box += 1
+			graph.add_node(node_box)
+			
+		for box_from, boxes_to in data_flux.iteritems():
+			for box_to, flux in boxes_to.iteritems():
+				if flux > 0:
+					edge = P.Edge(box_from, box_to,  label = flux)
+					graph.add_edge(edge)
+		graph.write_png('graphs/state_flux_'+str(i_flux)+'_mass_'+str(i_mass)+'_'+\
+			str(i_ratio)+'.png')
+		i_ratio += 1 
 ''' 
 Parametres communs a chaque simulation 
 '''
 
 Ratio_standard_IRMM=0.0637 # rapport isotopique du standard IRMM
-n_timestep=100000
+n_timestep=1000
 time = np.linspace(0, 13870.0, n_timestep) # temps
 
 # Conditions initiales des boites
-Delta={"diet": 1.0e0, "plasma": 1.51e0, "RBC": 2.74e0, "liver": 1.35e0, "urine": 1.0e0, "feces": 0.1e0, "menses": 2.5e0}
-Boxes=Delta.keys()
-Delta=array(Delta.values())
+Delta = {"diet": 1.0e0, "plasma": 1.51e0, "RBC": 2.74e0, "liver": 1.35e0, "urine": 1.0e0, "feces": 0.1e0, "menses": 2.5e0}
+Boxes = Delta.keys()
+Delta = array(Delta.values())
+
 Ratio=[];
 for ii in range(Delta.size):
 	Ratio.append((Delta[ii]/1e3+1e0)*Ratio_standard_IRMM)
 Ratio=array(Ratio);
-
-
 
 
 # Coefficients de partage
@@ -67,19 +94,19 @@ Parametres specificiques pour chaque simulation
 ''' 
 
 # definition de la gamme de masse
-mass_min=0.1
-mass_max=1e3
-n_mass=20
-mass_L=np.linspace(mass_min, mass_max, n_mass)
+mass_min = 0.1
+mass_max = 1e3
+n_mass = 10
+mass_L = np.linspace(mass_min, mass_max, n_mass)
 
 # definition de la gamme de flux
-flux_min=0.0
-flux_max=0.7
-n_flux=20
-flux_DP=np.linspace(flux_min, flux_max, n_flux)
+flux_min = 0.0
+flux_max = 0.7
+n_flux = 10
+flux_DP = np.linspace(flux_min, flux_max, n_flux)
 
-# Creation du tableau pour recevoir les donnees absicce premier, ordonnee dans le range()
-delta_RBC_final= [[None] * n_flux for i in range(n_mass)]
+# Creation du tableau pour recevoir les donnees abcisse premier, ordonnee dans le range()
+delta_RBC_final = [[None] * n_flux for i in range(n_mass)]
 
 ## Debut des simulations 
 for i_mass in range(mass_L.size):
@@ -113,13 +140,16 @@ for i_mass in range(mass_L.size):
 			list_flux.append(box.values())
 		flux=array(list_flux);
 		
-		Ratio=odeint(evol_ratio,Ratio,time)
-		
+		Ratio=odeint(evol_ratio, Ratio, time)
+
 		delta_RBC_final[i_mass][i_flux]=((Ratio[n_timestep-1][6]/Ratio_standard_IRMM)-1.0)*1000;
+
+		plot_state(Boxes, Ratio, data_flux, i_mass, i_flux)
+
 
 
 # creation de la figure
-contourf(flux_DP,mass_L,delta_RBC_final)
+contourf(flux_DP, mass_L, delta_RBC_final)
 xlabel(r"Menses $(mg.day^{-1})$")
 ylabel(r"$M{}_{liver}$ $(mg)$")
 
