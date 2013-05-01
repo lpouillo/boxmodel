@@ -1,0 +1,175 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+''' 
+Programme permettant de calculer les delta finaux pour réservoirs du zinc en fonction
+de l'augmentation de masse au cours de la croissance des enfants
+Modeling E2 de l'article " Modeling the Zn isotope metabolism in human body :
+perspectives for bioarcheological studies" Jaouen, Pouilloux et al.
+'''
+
+from scipy.integrate import odeint
+from random import gauss
+from pylab import *
+
+
+
+''' 
+Parametres communs a chaque simulation 
+'''
+
+Ratio_standard_JMC=0.0637 # rapport isotopique du standard JMC
+n_timestep=456
+time = np.linspace(0, 456.0, n_timestep) # temps
+
+# Conditions initiales des boites
+#Delta={"diet": 0.5e0, "plasma": 0.17e0, "RBC": 0.42e0, "liver": -1.05e0, "urine": 0.17e0, "feces": 0.4e0, "muscle": -0.4e0, "bone": 0.55e0, "skin": -0.18e0, "kidney":-0.7e0}
+Delta={"diet": 0.0e0, "plasma": 0.0e0, "RBC": 0.0e0, "liver": 0e0, "urine": 0.0e0, "feces": 0.0e0, "muscle": 0.0e0, "bone": 0.0e0, "skin": 0.0e0, "kidney":0e0}
+Boxes=Delta.keys()
+Delta=array(Delta.values())
+Ratio=[];
+for ii in range(Delta.size):
+  Ratio.append((Delta[ii]/1e3+1e0)*Ratio_standard_JMC)
+Ratio=array(Ratio);
+
+
+
+
+# Coefficients de partage
+coeff_DP=1.00018e0;
+#coeff_KU=1/0.9993e0;
+coeff_KU=1/0.9998e0;
+coeff_PRBC=1.00025e0
+coeff_PS=1.000275;
+coeff_PM=0.99986;
+coeff_PB=1.0003;
+coeff_PL=0.99939;
+#coeff_PD=1.00025;
+coeff_PD=1.000;
+
+data_coeff={
+		"diet": {"diet":1.0, "plasma": coeff_DP, "RBC": 1e0, "liver": 1e0, "urine": 1e0, "feces": 1e0, "muscle": 1e0, "bone": 1e0, "skin": 1e0, "kidney":1e0},
+		"plasma": {"diet":1.0, "plasma": 1e0, "RBC": coeff_PRBC, "liver": coeff_PL, "urine": 1e0, "feces": coeff_PD, "muscle": coeff_PM, "bone":coeff_PB, "skin": coeff_PS, "kidney":1/coeff_KU},
+		"RBC": {"diet": 1.0,"plasma": 1e0, "RBC": 1e0, "liver": 1/coeff_PRBC, "urine": 1e0, "feces": 1e0, "muscle": 1e0, "bone":1e0, "skin": 1e0, "kidney":1e0},
+		"liver": {"diet": 1.0,"plasma": 1/coeff_PL, "RBC": 1e0, "liver": 1e0, "urine": 1e0, "feces": 1e0, "muscle": 1e0, "bone":1e0, "skin": 1e0, "kidney":1e0},
+		"urine": {"diet": 1.0,"plasma": 1e0, "RBC": 1e0, "liver": 1e0, "urine": 1e0, "feces": 1e0, "muscle": 1e0, "bone":1e0, "skin": 1e0, "kidney":1e0},
+		"feces": {"diet": 1.0,"plasma": 1e0, "RBC": 1e0, "liver": 1e0, "urine": 1e0, "feces": 1e0, "muscle": 1e0, "bone":1e0, "skin": 1e0, "kidney":1e0},
+		"muscle": {"diet": 1.0,"plasma": 1/coeff_PM, "RBC": 1e0, "liver": 1e0, "urine": 1e0, "feces": 1e0, "muscle": 1e0, "bone":1e0, "skin": 1e0, "kidney":1e0},
+		"bone": {"diet": 1.0,"plasma": 1/coeff_PB, "RBC": 1e0, "liver": 1e0, "urine": 1e0, "feces": 1e0, "muscle": 1e0, "bone":1e0, "skin": 1e0, "kidney":1e0},
+		"skin": {"diet": 1.0,"plasma": 1e0, "RBC": 1e0, "liver": 1e0, "urine": 1e0, "feces": 1e0, "muscle": 1e0, "bone":1e0, "skin": 1e0, "kidney":1e0},
+		"kidney": {"diet": 1.0,"plasma": coeff_KU, "RBC": 1e0, "liver": 1e0, "urine": coeff_KU, "feces": 1e0, "muscle": 1e0, "bone":1e0, "skin": 1e0, "kidney":1e0}}
+
+# tranformation en list puis en array des coefficients de partage
+list_coeff=[]
+for box in data_coeff.values():
+	list_coeff.append(box.values()) 
+array_coeff=array(list_coeff);
+
+''' 
+Parametres specificiques pour chaque simulation
+- variation de la masse du foie
+- variation du flux de la diette vers le plasma
+''' 
+
+
+
+# Creation du tableau pour recevoir les donnees absicce premier, ordonnee dans le range()
+#delta_RBC_final= [[None] * n_flux for i in range(n_mass)]
+
+
+
+FB=0.005;
+
+data_flux={
+	"diet": {"diet": 0.0, "plasma": 30.41*4e0, "RBC": 0e0, "liver": 0e0, "urine": 0e0, "feces": 30.41*8e0, "muscle": 0e0, "bone": 0e0, "skin": 0e0, "kidney":0e0},
+			
+	"plasma": {"diet": 0.0, "plasma": 0e0, "RBC": 30.41*0.18e0, "liver": 30.41*2.64e0, "urine": 0e0, "feces": 30.41*3e0, "muscle": 30.41*0.0035e0, "bone": 30.41*FB, "skin": 30.41*0.5e0, "kidney":30.41*2.5e0},
+	"RBC": {"diet": 0.0,"plasma": 30.41*0.18e0, "RBC": 0e0, "liver": 0.0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0, "bone": 0e0, "skin": 0e0, "kidney":0e0},
+	"liver": {"diet": 0.0,"plasma": 30.41*2.64e0, "RBC": 0e0, "liver": 0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0, "bone": 0e0, "skin": 0e0, "kidney":0e0},
+	"urine": {"diet": 0.0,"plasma": 0e0, "RBC": 0e0, "liver": 0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0, "bone": 0e0, "skin": 0e0, "kidney":0e0},
+	"feces": {"diet": 0.0, "plasma": 0e0, "RBC": 0e0, "liver": 0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0, "bone": 0e0, "skin": 0e0, "kidney":0e0},
+	"muscle": {"diet": 0.0,"plasma": 30.41*0.0035e0, "RBC": 0e0, "liver": 0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0, "bone": 0e0, "skin": 0e0, "kidney":0e0},
+	"bone": {"diet": 0.0, "plasma":30.41* FB, "RBC": 0e0, "liver": 0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0, "bone": 0e0, "skin": 0e0, "kidney":0e0},
+	"skin": {"diet": 0.0, "plasma": 0e0, "RBC": 0e0, "liver": 0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0, "bone": 0e0, "skin": 0e0, "kidney":0e0},
+	"kidney": {"diet": 0.0,"plasma": 30.41*2.0e0, "RBC": 0e0, "liver": 0e0, "urine": 30.41*0.5e0, "feces": 0e0, "muscle": 0e0, "bone": 0e0, "skin": 0e0, "kidney":0e0}}
+	
+# tranformation en list puis en array
+list_flux=[]
+for box in data_flux.values():
+	list_flux.append(box.values())
+array_flux=array(list_flux);
+
+#Création du tableau age/poids
+#f=open("weightagemale.txt","r")
+#BW=f.readline().strip().split(" ")
+#f.close()
+#print BW
+fichier=open("weightagemale.txt","r")
+liste=[]
+for line in fichier.readlines():
+        listeValeur=line.split()
+        listeValeurF=[float(x) for x in listeValeur]
+        liste.append(listeValeurF)
+#liste.append([float(x) for x in line.split()])
+#B=f.readline()
+array_liste=array(liste);
+#print array_liste
+#print liste
+
+
+
+
+		
+# Definition de la fonction d'evolution
+def evol_ratio(ratio,t):
+	rationew=np.zeros(ratio.size)
+	for ii in range(ratio.size):
+		outflux=0;
+		influx=0;
+		 #array_masse=[]
+                mass_plasma=1.071429*0.043*array_liste[ii,1]**1.00
+                mass_RBC=10.96461*0.037*array_liste[ii,1]**0.97
+                mass_liver=40.32*0.087*array_liste[ii,1]**0.87
+                mass_muscle=51.79736*0.383*array_liste[ii,1]**1.02
+                mass_bone=125*0.061*array_liste[ii,1]**1.09
+                mass_skin=84.43288*0.11*array_liste[ii,1]**0.67
+                mass_kidney=2.701884*0.201096461*0.037*array_liste[ii,1]**0.85
+                #Mass={"diet": 1e12, "plasma": mass_plasma, "RBC": mass_RBC, "liver": 1e1, "urine": 1.0e-1, "feces": 1.0e-1, "muscle": 1.0e1, "bone": 1.0e1, "skin": 1.0e1, "kidney":1.0e1}
+
+                Mass={"diet": 1e12,  "plasma":mass_plasma, "RBC": mass_RBC, "liver": mass_liver, "urine": 1e-10, "feces": 1e-0, "muscle": mass_liver, "bone": mass_bone, "skin": mass_skin, "kidney":mass_kidney}
+                Boxes=Mass.keys()
+                
+                Mass=array(Mass.values())
+                for jj in range(ratio.size):  
+			# le nouveau ratio est calcule a partir des flux entrants et sortants
+			outflux = outflux + array_flux[ii][jj]/Mass[ii]*array_coeff[ii][jj]*ratio[ii]
+			influx = influx + array_flux[jj][ii]/Mass[ii]*array_coeff[jj][ii]*ratio[jj]
+		rationew[ii]= influx - outflux
+	return rationew;
+
+Ratio=odeint(evol_ratio,Ratio,time)
+deltac=((Ratio/Ratio_standard_JMC)-1.0)*1000;
+#print Ratio
+#print deltac
+
+#choix des courbes représentées sur le graph final
+#['urine', 'liver', 'kidney', 'skin', 'RBC', 'muscle', 'plasma', 'bone', 'diet', 'feces']
+
+#p2=plt.plot(time,deltac[:,1], label="liver")
+p8=plt.plot(time,deltac[:,7], label="bone 0.0")
+#p5=plt.plot(time,deltac[:,4], label="RBC 70")
+#p6=plt.plot(time,deltac[:,5], label="muscle")
+#p7=plt.plot(time,deltac[:,6], label="plasma")
+#p1=plt.plot(time,deltac[:,3], label="skin")
+#p4=plt.plot(time,deltac[:,2], label="kidney")
+
+
+
+legend(bbox_to_anchor=(1.01,1),loc=2, ncol=1, borderaxespad=0)
+
+		
+xlabel(r"Month number")
+ylabel(r"$\delta^{66}Zn$$(permil)$")
+
+plt.show()
+
+
