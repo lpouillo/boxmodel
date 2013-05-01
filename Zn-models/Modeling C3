@@ -1,9 +1,3 @@
-En cours d'élaboration 
-
-Le programme ne fonctionne pas pour le moment : le graph final montre des coefficients de fractionnement entre 0.0000 et 0.001 alors qu'ils sont calculés
-entre 0.9996 et 1.0004. 
-
-
 
 
 
