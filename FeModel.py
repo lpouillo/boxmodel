@@ -14,20 +14,23 @@ class FeModel(BoxModel):
     
     def run(self):
         """ Execute the engine and compute the results """
+        logger.info(pformat(self.Boxes))
         Ratio = self.initial_state()
         Ratio = odeint(self.evol_ratio, Ratio, self.time)
-        Delta_final = ((Ratio/self.standard_IRMM)-1.0)*1000;
+        Delta_final = ((Ratio/self.standard)-1.0)*1000;
         self.plot_evolution(Delta_final)
-        self.plot_state(self.Boxes.keys(), Delta_final[:,0], name = '_initial')
-        self.plot_state(self.Boxes.keys(), Delta_final[:,-1], name = '_final')
+        
+        self.plot_state(self.Boxes.keys(), Delta_final[0,:], name = '_initial')
+        self.plot_state(self.Boxes.keys(), Delta_final[-1,:], name = '_final')
  
     
     def parameters(self):
-        """ Define the boxes, the flux and the partition coefficients """
+        """ Define the time parameters, the isotopic standard and  the boxes, flux and partition coefficients """
         n_timestep = 10000
         self.time = linspace(0, 13870.0, n_timestep)  # temps
          
-        self.standard_IRMM = 0.0637
+        # IRMM standard
+        self.standard = 0.0637
          
         self.Boxes = { 
             "diet":     {'Delta':  1.0e0, 'Mass':  1e12}, 

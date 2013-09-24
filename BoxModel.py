@@ -10,7 +10,7 @@ Ecole Normale Superieure de Lyon
 This tools released under the GNU Public
 License, version 3 or later.
 '''
-
+from pprint import pformat
 from random import gauss
 from execo_engine import Engine, ParamSweeper, sweep, slugify, logger
 from numpy import linspace, array, zeros
@@ -21,8 +21,7 @@ import pydot as P
 
 class BoxModel(Engine):
     """ 
-    This is the main engine that allow to define the simulation parameter, the model boxes and
-    range of scenarios for your experiments
+    This is the main engine that is used to created custom isotopic models
     """ 
     def __init__(self):
         """ Add options for the number of measures, migration bandwidth, number of nodes
@@ -30,11 +29,12 @@ class BoxModel(Engine):
         super(BoxModel, self).__init__()
     
     def initial_state(self):
-        """ Convert the dict given from parameters to Numpy array """ 
+        """ Convert the dict given from parameters to Numpy array """
+        logger.debug('MASS\n'+pformat([box['Mass'] for box in self.Boxes.itervalues() ])) 
         self._Mass = array( [box['Mass'] for box in self.Boxes.itervalues() ] )
         self._Flux = array( [ box.values() for box in self.Flux.values() ])
         self._Partcoeff = array( [ box.values() for box in self.Partcoeff.values() ])
-        Ratio = array( [ (box['Delta']/1e3+1e0)*self.standard_IRMM for box in self.Boxes.itervalues() ] )    
+        Ratio = array( [ (box['Delta']/1e3+1e0)*self.standard for box in self.Boxes.itervalues() ] )    
         return Ratio
     
     def evol_ratio(self, ratio, t):
