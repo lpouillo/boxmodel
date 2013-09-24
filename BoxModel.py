@@ -40,7 +40,10 @@ class BoxModel(Engine):
 
     def run(self):
         """ Execute the engine and compute the results """
+        print self.Boxes
         Ratio = self.initial_state()
+        print Ratio
+        
         self.plot_state(self.Delta.keys(), Ratio, name = '_initial')
         
         Ratio = odeint(self.evol_ratio, Ratio, self.time)
@@ -143,4 +146,4 @@ class BoxModel(Engine):
         plt.legend()
         plt.xlabel(r"Years")
         plt.ylabel(r"$\delta^{66}Zn$$(permil)$")
-        plt.savefig(self.result_dir+'/test.png')         
+        plt.savefig(self.result_dir+'/evolution.png')         
