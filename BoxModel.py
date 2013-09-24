@@ -7,7 +7,10 @@ that exchange flux.
 
 
 It requires SciPy for computation, Matplotlib for model output
-and execo_engine for parameter range exploration.
+and execo_engine for parameter range exploration and engine characteristics.
+
+use with 
+execo-run BoxModel -ML
 
 
 More documentation can be found in the README file.
@@ -37,50 +40,26 @@ class BoxModel(Engine):
 
     def run(self):
         """ Execute the engine and compute the results """
+        Ratio = self.initial_state()
+        self.plot_state(self.Delta.keys(), Ratio, name = '_initial')
         
-        Ratio = odeint(self.evol_ratio, self.initial_state(), self.time)
-        self.plot_state(self.Delta.keys(), Ratio[:,0], name = '_initial')
-        self.plot_state(self.Delta.keys(), Ratio[:,-1], name = '_final')
+        Ratio = odeint(self.evol_ratio, Ratio, self.time)
         Delta_final = ((Ratio/self.standard_IRMM)-1.0)*1000;
+        self.plot_evolution(Delta_final)
         
-        self.plot_state(self.Delta.keys(), Ratio)
-
+        self.plot_state(self.Delta.keys(), Ratio[:,-1], name = '_final')
+            
+    def evol_ratio(self, ratio, t):
+        rationew = np.zeros(ratio.size)
+        for ii in range(ratio.size):
+            outflux=0;
+            influx=0;
+            for jj in range(ratio.size):
+                outflux = outflux + self._Flux[ii][jj]/self._Mass[ii]*self._Partcoeff[ii][jj]*ratio[ii]
+                influx = influx + self._Flux[jj][ii]/self._Mass[ii]*self._Partcoeff[jj][ii]*ratio[jj]
+            rationew[ii]= influx - outflux
+        return rationew;
         
-    def plot_evolution(self, Delta):
-        i_box = 0
-        for box in self.Boxes:
-            if box not in [ 'feces', 'urine' ]:
-                plt.plot(self.time/365., Delta[:,i_box], label=box)
-            i_box += 1
-        
-        
-        
-        
-        plt.legend()
-        
-                
-        plt.xlabel(r"Years")
-        plt.ylabel(r"$\delta^{66}Zn$$(permil)$")
-
-        plt.savefig('test.png')        
-        
-
-#            Ratio.append((Delta[ii]/1e3+1e0)*Ratio_standard_IRMM)
-        
-        
-    def initial_state(self):
-        self._Mass = np.array( self.Mass.values() )
-        self._Flux = np.array( [ box.values() for box in self.Flux.values() ])
-        self._Partcoeff = np.array( [ box.values() for box in self.Partcoeff.values() ])
-        
-        Ratio = np.array( [ (delta/1e3+1e0)*self.standard_IRMM for delta in self.Delta.values() ] )    
-        return Ratio
-        
-        
-
-#        plot_state(Boxes, Ratio, data_flux, i_mass, i_flux)
-        
-                
     def default_parameters(self):
         """ Define the boxes, the flux and the partition coefficients """
         n_timestep = 10000
@@ -125,21 +104,14 @@ class BoxModel(Engine):
             "feces":    {"diet": 1e0, "plasma": 1e0, "RBC": 1e0, "liver": 1e0, "urine": 1e0, "feces": 1e0, "menses": 1e0 },
             "menses":   {"diet": 1e0, "plasma": 1e0, "RBC": 1e0, "liver": 1e0, "urine": 1e0, "feces": 1e0, "menses": 1e0 }
             }
-       
-#    def init_ratio(self):
-#        """ Calculate """
-        
-    def evol_ratio(self, ratio, t):
-        rationew = np.zeros(ratio.size)
-        for ii in range(ratio.size):
-            outflux=0;
-            influx=0;
-            for jj in range(ratio.size):
-                # le nouveau ratio est calcule a partir des flux entrants et sortants
-                outflux = outflux + self._Flux[ii][jj]/self._Mass[ii]*self._Partcoeff[ii][jj]*ratio[ii]
-                influx = influx + self._Flux[jj][ii]/self._Mass[ii]*self._Partcoeff[jj][ii]*ratio[jj]
-            rationew[ii]= influx - outflux
-        return rationew;
+    
+    def initial_state(self):
+        """ Convert the dict given from parameters to Numpy array """ 
+        self._Mass = np.array( self.Mass.values() )
+        self._Flux = np.array( [ box.values() for box in self.Flux.values() ])
+        self._Partcoeff = np.array( [ box.values() for box in self.Partcoeff.values() ])
+        Ratio = np.array( [ (delta/1e3+1e0)*self.standard_IRMM for delta in self.Delta.values() ] )    
+        return Ratio
     
     def plot_state(self, boxes, ratios, name = ''):
         colors = {"diet": "#BBFFB5", "plasma": "#FFC66D", "RBC": "#BA0400", 
@@ -159,5 +131,16 @@ class BoxModel(Engine):
                 if flux > 0:
                     edge = P.Edge(box_from, box_to,  label = flux)
                     graph.add_edge(edge)
-        graph.write_png('state'+name+'.png')
+        graph.write_png(self.result_dir+'/state'+name+'.png')
+
         
+    def plot_evolution(self, Delta):
+        i_box = 0
+        for box in self.Boxes:
+            if box not in [ 'feces', 'urine' ]:
+                plt.plot(self.time/365., Delta[:,i_box], label=box)
+            i_box += 1
+        plt.legend()
+        plt.xlabel(r"Years")
+        plt.ylabel(r"$\delta^{66}Zn$$(permil)$")
+        plt.savefig(self.result_dir+'/test.png')         
