@@ -82,7 +82,7 @@ class BoxModel(Engine):
             i_box += 1
         plt.legend()
         plt.xlabel(r"Years")
-        plt.ylabel(r"$\delta^{66}Zn$$(permil)$")
+        plt.ylabel(self.delta_name)
         plt.savefig(self.result_dir+'/evolution.png')         
         
         
