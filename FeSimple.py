@@ -1,25 +1,22 @@
 #!/usr/bin/env python
 from BoxModel import *
 
-class FeModel(BoxModel):
+class FeSimple(BoxModel):
     """ 
-    This is the main engine that allow to define the simulation parameter, the model boxes and
-    range of scenarios for your experiments
+    A simple engine that perform the computation 
     """ 
     def __init__(self):
         """ Add options for the number of measures, migration bandwidth, number of nodes
         walltime, env_file or env_name, stress, and clusters and initialize the engine """
-        super(FeModel, self).__init__()
+        super(FeSimple, self).__init__()
         self.parameters()
     
     def run(self):
-        """ Execute the engine and compute the results """
-        logger.info(pformat(self.Boxes))
+        """ Execute the engine and compute the results """        
         Ratio = self.initial_state()
         Ratio = odeint(self.evol_ratio, Ratio, self.time)
         Delta_final = ((Ratio/self.standard)-1.0)*1000;
         self.plot_evolution(Delta_final)
-        
         self.plot_state(self.Boxes.keys(), Delta_final[0,:], name = '_initial')
         self.plot_state(self.Boxes.keys(), Delta_final[-1,:], name = '_final')
  
