@@ -40,19 +40,16 @@ class BoxModel(Engine):
 
     def run(self):
         """ Execute the engine and compute the results """
-        print self.Boxes
         Ratio = self.initial_state()
-        print Ratio
-        
-        self.plot_state(self.Delta.keys(), Ratio, name = '_initial')
         
         Ratio = odeint(self.evol_ratio, Ratio, self.time)
         Delta_final = ((Ratio/self.standard_IRMM)-1.0)*1000;
         self.plot_evolution(Delta_final)
-        
-        self.plot_state(self.Delta.keys(), Ratio[:,-1], name = '_final')
+        self.plot_state(self.Boxes.keys(), Delta_final[:,0], name = '_initial')
+        self.plot_state(self.Boxes.keys(), Delta_final[:,-1], name = '_final')
             
     def evol_ratio(self, ratio, t):
+        """ The evolution function coming from """
         rationew = np.zeros(ratio.size)
         for ii in range(ratio.size):
             outflux=0;
@@ -69,26 +66,15 @@ class BoxModel(Engine):
         self.time = np.linspace(0, 13870.0, n_timestep)  # temps
          
         self.standard_IRMM = 0.0637 
-        self.Boxes = [ "diet", "plasma", "RBC", "liver", "urine", "feces", "menses" ]
-                      
-        self.Delta = {
-             "diet":     1.0e0, 
-             "plasma":  1.51e0, 
-             "RBC":     2.74e0, 
-             "liver":   1.35e0, 
-             "urine":    1.0e0, 
-             "feces":    0.1e0, 
-             "menses":   2.5e0
-             }
-        self.Mass = { 
-            "diet":     1e12, 
-            "plasma":   3e0, 
-            "RBC":      2.5e3, 
-            "liver":    10e2, 
-            "urine":    1e-10, 
-            "feces":    1e-0, 
-            "menses":   1e-2
-            }
+        self.Boxes = { 
+            "diet":     {'Delta':  1.0e0, 'Mass':  1e12}, 
+            "plasma":   {'Delta': 1.51e0, 'Mass':   3e0}, 
+            "RBC":      {'Delta': 2.74e0, 'Mass': 2.5e3}, 
+            "liver":    {'Delta': 1.35e0, 'Mass':  10e2}, 
+            "urine":    {'Delta':  1.0e0, 'Mass': 1e-10}, 
+            "feces":    {'Delta':  0.1e0, 'Mass':  1e-0}, 
+            "menses":   {'Delta':  2.5e0, 'Mass':  1e-2} 
+        }
         self.Flux = {
             "diet":     {"diet": 0.0, "plasma":  1.3, "RBC":  0.0, "liver": 0.0, "urine": 0.0, "feces": 0.0, "menses": 0.0 },
             "plasma":   {"diet": 0.0, "plasma":  0.0, "RBC": 24.4, "liver": 5.0, "urine": 0.1, "feces": 0.0, "menses": 0.0 },
@@ -110,13 +96,13 @@ class BoxModel(Engine):
     
     def initial_state(self):
         """ Convert the dict given from parameters to Numpy array """ 
-        self._Mass = np.array( self.Mass.values() )
+        self._Mass = np.array( [box['Mass'] for box in self.Boxes.itervalues() ] )
         self._Flux = np.array( [ box.values() for box in self.Flux.values() ])
         self._Partcoeff = np.array( [ box.values() for box in self.Partcoeff.values() ])
-        Ratio = np.array( [ (delta/1e3+1e0)*self.standard_IRMM for delta in self.Delta.values() ] )    
+        Ratio = np.array( [ (box['Delta']/1e3+1e0)*self.standard_IRMM for box in self.Boxes.itervalues() ] )    
         return Ratio
     
-    def plot_state(self, boxes, ratios, name = ''):
+    def plot_state(self, boxes, deltas, name = ''):
         colors = {"diet": "#BBFFB5", "plasma": "#FFC66D", "RBC": "#BA0400", 
                 "liver": "#93BB8F", "urine": "#FBFF93", "feces": "#BF9285", "menses": "#FF0600"}
         shapes = {"diet": "rectangle", "plasma": "ellipse", "RBC": "ellipse", 
@@ -124,7 +110,7 @@ class BoxModel(Engine):
         graph = P.Dot(graph_type='digraph', fontname="Verdana", ratio = "1")
         i_box = 0
         for box in boxes:
-            node_box = P.Node(box, style="filled", label = box+'\n '+str(ratios[i_box]),
+            node_box = P.Node(box, style="filled", label = box+'\n '+str(round(deltas[i_box], 7)),
                 fillcolor=colors[box], shape = shapes[box])
             i_box += 1
             graph.add_node(node_box)
