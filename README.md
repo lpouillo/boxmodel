@@ -18,14 +18,16 @@ Klervia Jaouen (http://tel.archives-ouvertes.fr/tel-00781645).
 - numpy 	1.7.1
 - scipy		0.12
 - matplotlib	1.2.x
-- execo		2.2
+- pydot		1.0.x
+- execo		2.1
 
 =Usage=
+The BoxModel is a basic engine that can be derived to build specific element model. The only thing you need is to create the simulation parameters in a parameters method and run the engine.
 
 ==Demo==
-The proposed model is a simple simulation of the Fe ratio evolution. 
+The proposed model is a simple simulation of the Fe ratio evolution in a human body. 
 It can be run using:
-execo-run FeModel -ML
+	execo-run FeModel -ML
 
 ==Building customized model==
-The BoxModel is a basic engine that can be derived to build specific element model. The only thing you need is to create the simulation parameters in a parameters method and run the engine.
+
