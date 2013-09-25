@@ -14,17 +14,16 @@ class ZnCalibration(BoxModel):
     
     def run(self):
         """ Execute the engine and compute the results """        
-        Ratio = self.initial_state()
-        Ratio = odeint(self.evol_ratio, Ratio, self.time)
-        Delta_final = ((Ratio/self.standard)-1.0)*1000;
-        self.plot_evolution(Delta_final)
-        self.plot_state(self.Boxes.keys(), Delta_final[0,:], name = '_initial')
-        self.plot_state(self.Boxes.keys(), Delta_final[-1,:], name = '_final')
+        Delta = self.initial_state()
+        
+        Delta = self.compute_evolution(Delta)
+        
+        self.final_state(Delta[-1,:])
  
     
     def parameters(self):
         """ Define the time parameters, the isotopic standard and  the boxes, flux and partition coefficients """
-        n_timestep = 1000
+        n_timestep = 1000000
         self.time = linspace(0, 13870.0, n_timestep)  # temps
          
         # JMC standard

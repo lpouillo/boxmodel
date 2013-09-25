@@ -38,14 +38,26 @@ class BoxModel(Engine):
                     ''.ljust(8)+''.join( [ set_style(box.rjust(10), 'emph') for box in self.Boxes.iterkeys() ])+
                     set_style('\n'+'Delta'.ljust(8), 'object_repr')+''.join( [ str(box['Delta']).rjust(10) for box in self.Boxes.itervalues()])+
                     set_style('\n'+'Mass'.ljust(8), 'object_repr')+''.join( [ str(box['Mass']).rjust(10) for box in self.Boxes.itervalues() ])
-                    )
-                    
-#                    )'MASS\n'+pformat([box['Mass'] for box in self.Boxes.itervalues() ])) 
+                    ) 
+        self.plot_state(self.Boxes.keys(), array( [ box['Delta'] for box in self.Boxes.itervalues()]), name = '_initial')
+        logger.info('Graph has been saved to '+set_style(self.result_dir+'state_initial.png ', 'emph'))
         self._Mass = array( [ box['Mass'] for box in self.Boxes.itervalues() ] )
         self._Flux = array( [ box.values() for box in self.Flux.values() ])
         self._Partcoeff = array( [ box.values() for box in self.Partcoeff.values() ])
-        Ratio = array( [ (box['Delta']/1e3+1e0)*self.standard for box in self.Boxes.itervalues() ] )    
-        return Ratio
+        return [ box['Delta'] for box in self.Boxes.itervalues() ]
+        
+    
+    def compute_evolution(self, Delta, func = None):
+        """ """
+        logger.info(set_style('Computing evolution', 'log_header'))
+        if func is None:
+            func = self.evol_ratio
+        Ratio = [ ( delta/1e3+1e0)*self.standard for delta in Delta ] 
+        Ratio = odeint(func, Ratio, self.time)
+        Delta = ((Ratio/self.standard)-1.0)*1000;        
+        self.plot_evolution(Delta)
+        logger.info('Graph has been saved to '+set_style(self.result_dir+'evolution.png ', 'emph'))
+        return Delta
     
     def evol_ratio(self, ratio, t):
         """ The evolution function that can be used for isotopic ratio evolution"""
@@ -59,6 +71,14 @@ class BoxModel(Engine):
             rationew[ii]= influx - outflux
         return rationew;
     
+    def final_state(self, Delta_final):
+        """ """
+        logger.info(set_style('Final boxes state\n', 'log_header')+
+                    ''.ljust(8)+''.join( [ set_style(box.rjust(10), 'emph') for box in self.Boxes.iterkeys() ])+
+                    set_style('\n'+'Delta'.ljust(8), 'object_repr')+''.join( [ str(round(delta, 7)).rjust(10) for delta in Delta_final if absolute(delta) < 1000]))
+        self.plot_state(self.Boxes.keys(), Delta_final, name = '_final')
+        logger.info('Graph has been saved to '+set_style(self.result_dir+'state_final.png ', 'emph'))
+        
     def init_plots(self):
         """ Define the colors and shape of the model boxes"""
         self.plots_conf = {
@@ -81,9 +101,8 @@ class BoxModel(Engine):
         """ Make a graph of a given state """
         graph = Dot(graph_type='digraph', fontname="Verdana", size="10, 5", fixedsize= True)
         i_box = 0
-        for box in boxes:
-            
-            textcolor = 'white' if sum( [ self.color_chars.index(col) for col in self.plots_conf[box]['color'].split('#')[1] ] ) < 40 else 'black' 
+        for box in boxes:            
+            textcolor = 'white' if sum( [ self.color_chars.index(col) for col in self.plots_conf[box]['color'].split('#')[1] ] ) < 35 else 'black' 
             node_box = Node(box, style="filled", label = '<<font POINT-SIZE="10" color="'+textcolor+'">'+box+'<br/> '+
                             "%.7f" % round(deltas[i_box], 7)+'</font>>',
                 fillcolor = self.plots_conf[box]['color'], shape = self.plots_conf[box]['shape'])
