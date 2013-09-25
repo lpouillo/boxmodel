@@ -10,7 +10,7 @@ class FeSimple(BoxModel):
         walltime, env_file or env_name, stress, and clusters and initialize the engine """
         super(FeSimple, self).__init__()
         self.parameters()
-        self.delta_name = r"$\delta^{66}Fe$$(permil)$"
+        self.delta_name = r"$\delta^{66}Fe$$$"
     
     def run(self):
         """ Execute the engine and compute the results """        
