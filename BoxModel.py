@@ -35,7 +35,10 @@ class BoxModel(Engine):
     def initial_state(self):
         """ Convert the dict given from parameters to Numpy array """
         logger.info(set_style('Initial boxes configuration\n', 'log_header')+
-                    ''.ljust(10)+''.join( [ set_style(box.rjust(10), 'emph') for box in self.Boxes.iterkeys() ]))
+                    ''.ljust(8)+''.join( [ set_style(box.rjust(10), 'emph') for box in self.Boxes.iterkeys() ])+
+                    set_style('\n'+'Delta'.ljust(8), 'object_repr')+''.join( [ str(box['Delta']).rjust(10) for box in self.Boxes.itervalues()])+
+                    set_style('\n'+'Mass'.ljust(8), 'object_repr')+''.join( [ str(box['Mass']).rjust(10) for box in self.Boxes.itervalues() ])
+                    )
                     
 #                    )'MASS\n'+pformat([box['Mass'] for box in self.Boxes.itervalues() ])) 
         self._Mass = array( [ box['Mass'] for box in self.Boxes.itervalues() ] )
@@ -57,6 +60,7 @@ class BoxModel(Engine):
         return rationew;
     
     def init_plots(self):
+        """ Define the colors and shape of the model boxes"""
         self.plots_conf = {
             "diet":   {'color': "#BBFFB5", 'shape': "rectangle"},
             "plasma": {'color': "#D6DE42", 'shape': "ellipse"},
@@ -98,7 +102,7 @@ class BoxModel(Engine):
 
         
     def plot_evolution(self, Delta):
-        """ Draw a graph of the boxes evolution """
+        """ Draw a graph of the boxes evolution through years"""
         i_box = 0
         for box in self.Boxes:
             # remove deriving boxes 
