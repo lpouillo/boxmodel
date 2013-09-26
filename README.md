@@ -13,7 +13,8 @@ A detailed explanation of the model can be found in the PhD manuscript of
 Klervia Jaouen (http://tel.archives-ouvertes.fr/tel-00781645).
 
 
-==Requirements==
+Requirements
+============
 - python 	2.7
 - numpy 	1.7.1
 - scipy		0.12
