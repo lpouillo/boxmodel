@@ -37,7 +37,7 @@ class ZnCalibration(BoxModel):
             "urine":    {'Delta':    0e0, 'Mass':   1e1}, 
             "feces":    {'Delta':    0e0, 'Mass':   1e1}, 
             "muscle":   {'Delta':    0e0, 'Mass': 1.5e3},
-            "bone":    {'Delta': 0.48e0, 'Mass': 7.7e2},
+            "bone":     {'Delta': 0.48e0, 'Mass': 7.7e2},
             "skin":     {'Delta':    0e0, 'Mass': 1.6e2},
             "kidney":   {'Delta':    0e0, 'Mass':   2e1}
         }
