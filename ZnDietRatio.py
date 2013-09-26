@@ -20,7 +20,7 @@ class ZnDietRatio(BoxModel):
              
         while len(sweeper.get_remaining()) >0:
             comb = sweeper.get_next()
-            comb_dir = self.result_dir + slugify(comb)+'/'
+            comb_dir = self.result_dir +'/'+ slugify(comb)
             try:
                 mkdir(comb_dir)
             except:
