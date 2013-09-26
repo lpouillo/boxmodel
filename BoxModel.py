@@ -11,6 +11,7 @@ This tools released under the GNU Public
 License, version 3 or later.
 '''
 from pprint import pformat
+from os import path, mkdir
 from random import gauss
 from execo_engine import Engine, ParamSweeper, sweep, slugify, logger
 from execo.log import set_style
@@ -32,30 +33,41 @@ class BoxModel(Engine):
         logger.setLevel('INFO')
         logger.info(set_style('\n\n                 Welcome to the human isotopic Box Model\n', 'log_header'))
             
-    def initial_state(self):
+    def initial_state(self, outdir = None):
         """ Convert the dict given from parameters to Numpy array """
         logger.info(set_style('Initial boxes configuration\n', 'log_header')+
                     ''.ljust(8)+''.join( [ set_style(box.rjust(10), 'emph') for box in self.Boxes.iterkeys() ])+
                     set_style('\n'+'Delta'.ljust(8), 'object_repr')+''.join( [ str(box['Delta']).rjust(10) for box in self.Boxes.itervalues()])+
                     set_style('\n'+'Mass'.ljust(8), 'object_repr')+''.join( [ str(box['Mass']).rjust(10) for box in self.Boxes.itervalues() ])
                     ) 
-        self.plot_state(self.Boxes.keys(), array( [ box['Delta'] for box in self.Boxes.itervalues()]), name = '_initial')
-        logger.info('Graph has been saved to '+set_style(self.result_dir+'state_initial.png ', 'emph'))
+        if outdir is None:
+            outdir = self.result_dir
+        self.plot_state(self.Boxes.keys(), array( [ box['Delta'] for box in self.Boxes.itervalues()]), 
+                        name = '_initial', outdir = outdir)
+        
+        logger.info('Graph has been saved to '+set_style(outdir+'state_initial.png ', 'emph'))
         self._Mass = array( [ box['Mass'] for box in self.Boxes.itervalues() ] )
         self._Flux = array( [ box.values() for box in self.Flux.values() ])
         self._Partcoeff = array( [ box.values() for box in self.Partcoeff.values() ])
+        
+        f = open(outdir+'Delta.initial', 'w')
+        for box, value in self.Boxes.iteritems():
+            f.write(box+' '+str(value['Delta'])+'\n')
+        f.close()
         return [ box['Delta'] for box in self.Boxes.itervalues() ]
         
     
-    def compute_evolution(self, Delta, func = None):
+    def compute_evolution(self, Delta, func = None, outdir = None):
         """ """
         logger.info(set_style('Computing evolution', 'log_header'))
         if func is None:
             func = self.evol_ratio
+        if outdir is None:
+            outdir = self.result_dir
         Ratio = [ ( delta/1e3+1e0)*self.standard for delta in Delta ] 
         Ratio = odeint(func, Ratio, self.time)
         Delta = ((Ratio/self.standard)-1.0)*1000;        
-        self.plot_evolution(Delta)
+        self.plot_evolution(Delta, outdir = outdir)
         logger.info('Graph has been saved to '+set_style(self.result_dir+'evolution.png ', 'emph'))
         return Delta
     
@@ -71,13 +83,20 @@ class BoxModel(Engine):
             rationew[ii]= influx - outflux
         return rationew;
     
-    def final_state(self, Delta_final):
+    def final_state(self, Delta_final, outdir):
         """ """
+        if outdir is None:
+            outdir = self.result_dir
         logger.info(set_style('Final boxes state\n', 'log_header')+
                     ''.ljust(8)+''.join( [ set_style(box.rjust(10), 'emph') for box in self.Boxes.iterkeys() ])+
                     set_style('\n'+'Delta'.ljust(8), 'object_repr')+''.join( [ str(round(delta, 7)).rjust(10) for delta in Delta_final if absolute(delta) < 1000]))
-        self.plot_state(self.Boxes.keys(), Delta_final, name = '_final')
-        logger.info('Graph has been saved to '+set_style(self.result_dir+'state_final.png ', 'emph'))
+        self.plot_state(self.Boxes.keys(), Delta_final, name = '_final', outdir = outdir)
+        f = open(outdir+'Delta.final', 'w')
+        for box in self.Boxes.iterkeys():
+            idx = self.Boxes.keys().index(box)
+            f.write(box+' '+str(Delta_final[idx])+'\n')
+        f.close()
+        logger.info('Graph has been saved to '+set_style(outdir+'state_final.png ', 'emph'))
         
     def init_plots(self):
         """ Define the colors and shape of the model boxes"""
@@ -97,7 +116,7 @@ class BoxModel(Engine):
         self.color_chars = '0123456789ABCDEF'
         
     
-    def plot_state(self, boxes, deltas, name = ''):
+    def plot_state(self, boxes, deltas, name = '', outdir = None):
         """ Make a graph of a given state """
         graph = Dot(graph_type='digraph', fontname="Verdana", size="10, 5", fixedsize= True)
         i_box = 0
@@ -117,11 +136,15 @@ class BoxModel(Engine):
                     elif flux < 0:
                         edge = Edge(box_to, box_from,  label = '<<font POINT-SIZE="10">'+str(flux)+'</font>>')                
                     graph.add_edge(edge)
-        graph.write_png(self.result_dir+'/state'+name+'.png')
+        
+        if outdir is None:
+            outdir = self.result_dir
+        graph.write_png(outdir+'/state'+name+'.png')
 
         
-    def plot_evolution(self, Delta):
+    def plot_evolution(self, Delta, outdir = None):
         """ Draw a graph of the boxes evolution through years"""
+        plt.figure()
         i_box = 0
         for box in self.Boxes:
             # remove deriving boxes 
@@ -132,7 +155,9 @@ class BoxModel(Engine):
         plt.legend()
         plt.xlabel(r"Years")
         plt.ylabel(self.delta_name)
-        plt.savefig(self.result_dir+'/evolution.png')         
+        if outdir is None:
+            outdir = self.result_dir
+        plt.savefig(outdir+'/evolution.png')         
         
         
         
