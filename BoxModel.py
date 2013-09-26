@@ -41,11 +41,10 @@ class BoxModel(Engine):
                     set_style('\n'+'Mass'.ljust(8), 'object_repr')+''.join( [ str(box['Mass']).rjust(10) for box in self.Boxes.itervalues() ])
                     ) 
         if outdir is None:
-            outdir = self.result_dir
+            outdir = self.result_dir+'/'
         self.plot_state(self.Boxes.keys(), array( [ box['Delta'] for box in self.Boxes.itervalues()]), 
                         name = '_initial', outdir = outdir)
         
-        logger.info('Graph has been saved to '+set_style(outdir+'state_initial.png ', 'emph'))
         self._Mass = array( [ box['Mass'] for box in self.Boxes.itervalues() ] )
         self._Flux = array( [ box.values() for box in self.Flux.values() ])
         self._Partcoeff = array( [ box.values() for box in self.Partcoeff.values() ])
@@ -68,7 +67,6 @@ class BoxModel(Engine):
         Ratio = odeint(func, Ratio, self.time)
         Delta = ((Ratio/self.standard)-1.0)*1000;        
         self.plot_evolution(Delta, outdir = outdir)
-        logger.info('Graph has been saved to '+set_style(self.result_dir+'evolution.png ', 'emph'))
         return Delta
     
     def evol_ratio(self, ratio, t):
@@ -96,7 +94,7 @@ class BoxModel(Engine):
             idx = self.Boxes.keys().index(box)
             f.write(box+' '+str(Delta_final[idx])+'\n')
         f.close()
-        logger.info('Graph has been saved to '+set_style(outdir+'state_final.png ', 'emph'))
+        
         
     def init_plots(self):
         """ Define the colors and shape of the model boxes"""
@@ -139,8 +137,10 @@ class BoxModel(Engine):
         
         if outdir is None:
             outdir = self.result_dir
-        graph.write_png(outdir+'/state'+name+'.png')
-
+            
+        outfile = outdir+'/state'+name+'.png'
+        graph.write_png(outfile)
+        logger.info('State has been saved to '+set_style(outfile, 'emph'))
         
     def plot_evolution(self, Delta, outdir = None):
         """ Draw a graph of the boxes evolution through years"""
@@ -157,7 +157,9 @@ class BoxModel(Engine):
         plt.ylabel(self.delta_name)
         if outdir is None:
             outdir = self.result_dir
-        plt.savefig(outdir+'/evolution.png')         
+        outfile = outdir+'/evolution.png'
+        plt.savefig(outfile)
+        logger.info('Evolution has been saved to '+set_style(outfile, 'emph'))    
         
         
         
