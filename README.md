@@ -23,9 +23,9 @@ Requirements
 - execo		2.1
 
 On Debian/Ubuntu, these command lines should install all the stuff need:
-    sudo apt-get install git graphviz python-setuptools libatlas3-base libatlas-dev libblas3 libblas-dev liblapack3 liblapack-dev build-essential gfortran libfreetype6-dev ;
-    sudo easy_install numpy && sudo easy_install scipy && sudo easy_install matplotlib && sudo easy_install pydot
-    wget http://execo.gforge.inria.fr/downloads/execo-2.1.tar.gz && tar xzf execo-2.1.tar.gz && cd execo-2.1/ && sudo make install
+        sudo apt-get install git graphviz python-setuptools libatlas3-base libatlas-dev libblas3 libblas-dev liblapack3 liblapack-dev build-essential gfortran libfreetype6-dev ;
+        sudo easy_install numpy && sudo easy_install scipy && sudo easy_install matplotlib && sudo easy_install pydot
+        wget http://execo.gforge.inria.fr/downloads/execo-2.1.tar.gz && tar xzf execo-2.1.tar.gz && cd execo-2.1/ && sudo make install
 
 
 Usage
