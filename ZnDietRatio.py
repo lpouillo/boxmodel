@@ -34,6 +34,7 @@ class ZnDietRatio(BoxModel):
             logger.info('Combination done\n')
  
         logger.info('All combinations have been done, result can be founc in '+self.result_dir)
+        
     def set_flux(self, flux_diet, flux_bone):        
         k = 0.33
         t = 0.58333
