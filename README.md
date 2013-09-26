@@ -18,8 +18,8 @@ Requirements
 - python 	2.7
 - numpy 	1.7.1
 - scipy		0.12
-- matplotlib	1.2.x
-- pydot		1.0.x
+- matplotlib	1.2.1
+- pydot		1.0.28
 - execo		2.1
 
 On Debian, these command lines should install all the stuff need:
