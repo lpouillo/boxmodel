@@ -13,7 +13,7 @@ A detailed explanation of the model can be found in the PhD manuscript of
 Klervia Jaouen (http://tel.archives-ouvertes.fr/tel-00781645).
 
 
-=Requirements=
+==Requirements==
 - python 	2.7
 - numpy 	1.7.1
 - scipy		0.12
@@ -21,7 +21,7 @@ Klervia Jaouen (http://tel.archives-ouvertes.fr/tel-00781645).
 - pydot		1.0.x
 - execo		2.1
 
-=Usage=
+==Usage==
 The BoxModel is a basic engine that can be derived to build specific element model. The only thing you need is to create the simulation parameters in a parameters method and run the engine.
 
 ==Demo==
