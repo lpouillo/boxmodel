@@ -14,7 +14,7 @@ Klervia Jaouen (http://tel.archives-ouvertes.fr/tel-00781645).
 
 
 Requirements
-============
+------------
 - python 	2.7
 - numpy 	1.7.1
 - scipy		0.12
@@ -22,13 +22,21 @@ Requirements
 - pydot		1.0.x
 - execo		2.1
 
-==Usage==
+On Debian/Ubuntu, these command lines should install all the stuff need:
+    sudo apt-get install git graphviz python-setuptools libatlas3-base libatlas-dev libblas3 libblas-dev liblapack3 liblapack-dev build-essential gfortran libfreetype6-dev ;
+    sudo easy_install numpy && sudo easy_install scipy && sudo easy_install matplotlib && sudo easy_install pydot
+    wget http://execo.gforge.inria.fr/downloads/execo-2.1.tar.gz && tar xzf execo-2.1.tar.gz && cd execo-2.1/ && sudo make install
+
+
+Usage
+-----
 The BoxModel is a basic engine that can be derived to build specific element model. The only thing you need is to create the simulation parameters in a parameters method and run the engine.
 
-==Demo==
+Demo
+----
 The proposed model is a simple simulation of the Fe ratio evolution in a human body. 
 It can be run using:
 	execo-run FeModel -ML
 
-==Building customized model==
-
+Building customized model
+-------------------------
