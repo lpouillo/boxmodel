@@ -83,7 +83,7 @@ class BoxModel(Engine):
             rationew[ii]= influx - outflux
         return rationew;
     
-    def final_state(self, Delta_final, outdir):
+    def final_state(self, Delta_final, outdir = None):
         """ """
         if outdir is None:
             outdir = self.result_dir
