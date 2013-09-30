@@ -47,9 +47,12 @@ Usage
 The BoxModel is a basic engine that can be derived to build specific element model. It does not work by itself.
 You can run the demo by typing:
 
-    execo-run FeSimple -ML 	        # Evolution of the iron ratio
-    execo-run ZnCalibration -ML		# Evolution of the zinc ratio
-    execo-run ZnDietRatio -ML		# Evolution of the zinc ratio pour un espace de paramètre donné 
+    # Evolution of the iron ratio
+    execo-run FeSimple -ML 	        
+    # Evolution of the zinc ratio
+    execo-run ZnCalibration -ML		
+    # Evolution of the zinc ratio for a given parameter range (Diet ratio variation) 
+    execo-run ZnDietRatio -ML		
 
 Demo
 ----
