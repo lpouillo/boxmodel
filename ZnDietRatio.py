@@ -18,6 +18,7 @@ class ZnDietRatio(BoxModel):
         sweeps = sweep(parameters)
         sweeper = ParamSweeper( path.join(self.result_dir, "sweeps"), sweeps)
              
+        
         while len(sweeper.get_remaining()) >0:
             comb = sweeper.get_next()
             comb_dir = self.result_dir +'/'+ slugify(comb)
@@ -33,7 +34,7 @@ class ZnDietRatio(BoxModel):
             sweeper.done(comb)
             logger.info('Combination done\n')
  
-        logger.info('All combinations have been done, result can be founc in '+self.result_dir)
+        logger.info('All combinations have been done, result can be found in '+self.result_dir)
         
     def set_flux(self, flux_diet, flux_bone):        
         k = 0.33

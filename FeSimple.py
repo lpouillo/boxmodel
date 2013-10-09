@@ -3,7 +3,7 @@ from BoxModel import *
 
 class FeSimple(BoxModel):
     """ 
-    A simple engine that perform the computation 
+    A simple engine that compute the evolution of Delta66Fe
     """ 
     def __init__(self):
         """ Add options for the number of measures, migration bandwidth, number of nodes
