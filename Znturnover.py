@@ -96,17 +96,3 @@ walltime, env_file or env_name, stress, and clusters and initialize the engine "
             "kidney": {"diet": 1.0, "plasma": coeff_KU, "RBC": 1e0, "liver": 1e0, "urine": coeff_KU, "feces": 1e0, "muscle": 1e0, "bone":1e0, "skin": 1e0, "kidney":1e0}
             }
             
-
-    Status
-    API
-    Training
-    Shop
-    Blog
-    About
-
-    © 2013 GitHub, Inc.
-    Terms
-    Privacy
-    Security
-    Contact
-
