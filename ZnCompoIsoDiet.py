@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 from BoxModel import *
 
-class ZnDietRatio(BoxModel):
+class ZnCompoIsoDiet(BoxModel):
     """
 A simple engine that perform the computation
 """
     def __init__(self):
         """ Add options for the number of measures, migration bandwidth, number of nodes
 walltime, env_file or env_name, stress, and clusters and initialize the engine """
-        super(ZnDietRatio, self).__init__()
+        super(ZnCompoIsoDiet, self).__init__()
         self.parameters()
         self.delta_name = r"$\delta^{66}Zn$"
     
