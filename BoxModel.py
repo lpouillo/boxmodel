@@ -49,7 +49,7 @@ class BoxModel(Engine):
         self._Flux = array( [ box.values() for box in self.Flux.values() ])
         self._Partcoeff = array( [ box.values() for box in self.Partcoeff.values() ])
         
-        f = open(outdir+'Delta.initial', 'w')
+        f = open(outdir+'/Delta.initial', 'w')
         for box, value in self.Boxes.iteritems():
             f.write(box+' '+str(value['Delta'])+'\n')
         f.close()
@@ -89,7 +89,7 @@ class BoxModel(Engine):
                     ''.ljust(8)+''.join( [ set_style(box.rjust(10), 'emph') for box in self.Boxes.iterkeys() ])+
                     set_style('\n'+'Delta'.ljust(8), 'object_repr')+''.join( [ str(round(delta, 7)).rjust(10) for delta in Delta_final if absolute(delta) < 1000]))
         self.plot_state(self.Boxes.keys(), Delta_final, name = '_final', outdir = outdir)
-        f = open(outdir+'Delta.final', 'w')
+        f = open(outdir+'/Delta.final', 'w')
         for box in self.Boxes.iterkeys():
             idx = self.Boxes.keys().index(box)
             f.write(box+' '+str(Delta_final[idx])+'\n')
