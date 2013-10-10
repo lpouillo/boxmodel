@@ -14,7 +14,7 @@ walltime, env_file or env_name, stress, and clusters and initialize the engine "
     
     def run(self):
         """ Execute the engine and compute the results """
-        parameters = {'delta_diet': range(-0.1,1.0)}
+        parameters = {'delta_diet': range(-0.1,1.0), 'coeff_DP'=range(0.9996, 1.0004)}
         sweeps = sweep(parameters)
         sweeper = ParamSweeper( path.join(self.result_dir, "sweeps"), sweeps)
              
@@ -82,11 +82,12 @@ walltime, env_file or env_name, stress, and clusters and initialize the engine "
         coeff_PM=0.99986;
         coeff_PB=1.0003;
         coeff_PL=0.99939;
+        #coeff_DP=1.00018,
         #coeff_PD=1.00025;
         coeff_PD=1.000;
 
         self.Partcoeff = {
-            "diet": {"diet": 1.0, "plasma": 1.00018e0, "RBC": 1e0, "liver": 1e0, "urine": 1e0, "feces": 1e0, "muscle": 1e0, "bone": 1e0, "skin": 1e0, "kidney":1e0},
+            "diet": {"diet": 1.0, "plasma": coeff_DP, "RBC": 1e0, "liver": 1e0, "urine": 1e0, "feces": 1e0, "muscle": 1e0, "bone": 1e0, "skin": 1e0, "kidney":1e0},
             "plasma": {"diet": 1.0, "plasma": 1e0, "RBC": coeff_PRBC, "liver": coeff_PL, "urine": 1e0, "feces": coeff_PD, "muscle": coeff_PM, "bone":coeff_PB, "skin": coeff_PS, "kidney":1/coeff_KU},
             "RBC": {"diet": 1.0, "plasma": 1e0, "RBC": 1e0, "liver": 1/coeff_PRBC, "urine": 1e0, "feces": 1e0, "muscle": 1e0, "bone":1e0, "skin": 1e0, "kidney":1e0},
             "liver": {"diet": 1.0, "plasma": 1/coeff_PL, "RBC": 1e0, "liver": 1e0, "urine": 1e0, "feces": 1e0, "muscle": 1e0, "bone":1e0, "skin": 1e0, "kidney":1e0},
@@ -99,4 +100,7 @@ walltime, env_file or env_name, stress, and clusters and initialize the engine "
             }
             
 
-  
+   def plot_gaypride(self, Delta, outdir=None):
+       """ Draw a contour plot with the final values as a function of the isotopic composition of the diet and the isotopic fractionation during intestinal absorption """
+       levels = [-0.2, -0.1,0,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7]
+        plt.contourf(Delta[0,0], coeff_DP, Delta_final,levels)
