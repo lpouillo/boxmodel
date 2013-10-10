@@ -103,4 +103,4 @@ walltime, env_file or env_name, stress, and clusters and initialize the engine "
    def plot_gaypride(self, Delta, outdir=None):
        """ Draw a contour plot with the final values as a function of the isotopic composition of the diet and the isotopic fractionation during intestinal absorption """
        levels = [-0.2, -0.1,0,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7]
-        plt.contourf(Delta[0,0], coeff_DP, Delta_final,levels)
+        plt.contourf(Delta[0,8], coeff_DP, Delta_final[4],levels)
