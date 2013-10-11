@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-from BoxModel import *
+from IsotopicBoxModel import *
 
-class ZnCalibration(BoxModel):
+class ZnCalibration(IsotopicBoxModel):
     """ 
     A simple engine that perform the computation 
     """ 

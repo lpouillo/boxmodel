@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-from BoxModel import *
+from IsotopicBoxModel import *
 
-class FeSimple(BoxModel):
+class FeSimple(IsotopicBoxModel):
     """ 
     A simple engine that compute the evolution of Delta66Fe
     """ 

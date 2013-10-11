@@ -21,17 +21,18 @@ import matplotlib.pyplot as plt
 from pydot import Dot, Node, Edge
 
 
-class BoxModel(Engine):
+class IsotopicBoxModel(Engine):
     """ 
     This is the main engine that is used to created custom isotopic models
     """ 
     def __init__(self):
         """ Add options for the number of measures, migration bandwidth, number of nodes
         walltime, env_file or env_name, stress, and clusters and initialize the engine """
-        super(BoxModel, self).__init__()
+        super(IsotopicBoxModel, self).__init__()
         self.init_plots()
         logger.setLevel('INFO')
         logger.info(set_style('\n\n                 Welcome to the human isotopic Box Model\n', 'log_header'))
+        logger.debug(pformat(self.__dict__))
             
     def initial_state(self, outdir = None):
         """ Convert the dict given from parameters to Numpy array """
@@ -69,6 +70,8 @@ class BoxModel(Engine):
         self.plot_evolution(Delta, outdir = outdir)
         return Delta
     
+    
+        
     def evol_ratio(self, ratio, t):
         """ The evolution function that can be used for isotopic ratio evolution"""
         rationew = zeros(ratio.size)

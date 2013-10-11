@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-from BoxModel import *
+from IsotopicBoxModel import *
 
-class ZnDietRatio(BoxModel):
+class ZnDietRatio(IsotopicBoxModel):
     """ 
     A simple engine that perform the computation 
     """ 

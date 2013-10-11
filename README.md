@@ -1,4 +1,4 @@
-BoxModel
+IsotopicIsotopicBoxModel
 ========
 
 A box model written in Python.
@@ -44,7 +44,7 @@ Finally clone the repository
     
 Usage
 -----
-The BoxModel is a basic engine that can be derived to build specific element model. It does not work by itself.
+The IsotopicBoxModel is a basic engine that can be derived to build specific element model. It does not work by itself.
 You can run the demo by typing:
 
     # Evolution of the iron ratio
