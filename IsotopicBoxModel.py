@@ -11,14 +11,18 @@ This tools released under the GNU Public
 License, version 3 or later.
 '''
 from pprint import pformat
-from os import path, mkdir
+from os import path, mkdir, listdir
 from random import gauss
 from execo_engine import Engine, ParamSweeper, sweep, slugify, logger
 from execo.log import set_style
 from numpy import linspace, array, zeros, absolute
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt 
+import gc
 from pydot import Dot, Node, Edge
+
+
+
 
 
 class IsotopicBoxModel(Engine):
@@ -145,9 +149,14 @@ class IsotopicBoxModel(Engine):
         graph.write_png(outfile)
         logger.info('State has been saved to '+set_style(outfile, 'emph'))
         
+        
+        del graph
+        gc.collect()
+        
+        
     def plot_evolution(self, Delta, outdir = None):
         """ Draw a graph of the boxes evolution through years"""
-        plt.figure()
+        fig = plt.figure()
         i_box = 0
         for box in self.Boxes:
             # remove deriving boxes 
@@ -164,6 +173,9 @@ class IsotopicBoxModel(Engine):
         plt.savefig(outfile)
         logger.info('Evolution has been saved to '+set_style(outfile, 'emph'))    
         
+        fig.clf()
+        plt.close()
         
+        gc.collect()
         
         
