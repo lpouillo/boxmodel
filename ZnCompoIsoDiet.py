@@ -14,7 +14,7 @@ walltime, env_file or env_name, stress, and clusters and initialize the engine "
     
     def run(self):
         """ Execute the engine and compute the results """
-        parameters = {'delta_diet': range(-0.1,1.0), 'coeff_DP'=range(0.9996, 1.0004)}
+        parameters = {'delta_diet': range(-0.1,1.0), 'coeff_DP' : range(0.9996, 1.0004)}
         sweeps = sweep(parameters)
         sweeper = ParamSweeper( path.join(self.result_dir, "sweeps"), sweeps)
              
