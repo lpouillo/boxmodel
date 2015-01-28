@@ -5,8 +5,9 @@ from IsotopicBoxModel import IsotopicBoxModel, sweep, ParamSweeper, slugify, \
 
 class ZnCompoIsoDiet(IsotopicBoxModel):
     """
-A simple engine that perform the computation
-"""
+    An engine that perform the computation of the evolution of Zn isotopic 
+    ratio as a function of Diet value
+    """
     def __init__(self):
         """Set delta_name"""
         super(ZnCompoIsoDiet, self).__init__()
@@ -29,35 +30,60 @@ A simple engine that perform the computation
                 pass
             self.set_flux(comb['flux_diet'], comb['flux_bone'])
             Delta = []
-            Delta = self.initial_state(outdir = comb_dir)
-            Delta = self.compute_evolution(Delta, outdir = comb_dir)
-            self.final_state(Delta[-1,:], outdir = comb_dir)
+            Delta = self.initial_state(outdir=comb_dir)
+            Delta = self.compute_evolution(Delta, outdir=comb_dir)
+            self.final_state(Delta[-1, :], outdir=comb_dir)
             sweeper.done(comb)
             logger.info('Combination done\n')
 
-        logger.info('All combinations have been done, result can be founc in '+self.result_dir)
+        logger.info('All combinations have been done, result can be found in '
+                    + self.result_dir)
 
     def set_flux(self, flux_diet, flux_bone):
         k = 0.33
         t = 1
         flux_diet = 12
         flux_bone = 0.01
-        logger.info('Using flux_diet = '+str(flux_diet)+' and flux_bone = '+str(flux_bone))
+        logger.info('Using flux_diet = %s and flux_bone = %s', flux_diet,
+                    flux_bone)
         self.Flux = {
-            "diet": {"diet": 0.0, "plasma": k*flux_diet, "RBC": 0e0, "liver": 0e0, "urine": 0e0, "feces": (1-k)*flux_diet, "muscle": 0e0, "bone": 0e0, "skin": 0e0, "kidney":0e0},
-            "plasma": {"diet": 0.0, "plasma": 0e0, "RBC": t*0.18e0, "liver": t*2.64e0, "urine": 0e0, "feces": 0.75*k*flux_diet, "muscle": t*0.0035e0, "bone": flux_bone, "skin": 0.125*k*flux_diet, "kidney":0.625*k*flux_diet},
-            "RBC": {"diet": 0.0,"plasma": t*0.18e0, "RBC": 0e0, "liver": 0.0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0, "bone": 0e0, "skin": 0e0, "kidney":0e0},
-            "liver": {"diet": 0.0,"plasma": t*2.64e0, "RBC": 0e0, "liver": 0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0, "bone": 0e0, "skin": 0e0, "kidney":0e0},
-            "urine": {"diet": 0.0,"plasma": 0e0, "RBC": 0e0, "liver": 0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0, "bone": 0e0, "skin": 0e0, "kidney":0e0},
-            "feces": {"diet": 0.0, "plasma": 0e0, "RBC": 0e0, "liver": 0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0, "bone": 0e0, "skin": 0e0, "kidney":0e0},
-            "muscle": {"diet": 0.0,"plasma": t*0.0035e0, "RBC": 0e0, "liver": 0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0, "bone": 0e0, "skin": 0e0, "kidney":0e0},
-            "bone": {"diet": 0.0, "plasma": flux_bone, "RBC": 0e0, "liver": 0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0, "bone": 0e0, "skin": 0e0, "kidney":0e0},
-            "skin": {"diet": 0.0, "plasma": 0e0, "RBC": 0e0, "liver": 0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0, "bone": 0e0, "skin": 0e0, "kidney":0e0},
-            "kidney": {"diet": 0.0,"plasma": 0.5*k*flux_diet, "RBC": 0e0, "liver": 0e0, "urine": 0.125*k*flux_diet, "feces": 0e0, "muscle": 0e0, "bone": 0e0, "skin": 0e0, "kidney":0e0}}
-
+            "diet": {"diet": 0.0, "plasma": k * flux_diet, "RBC": 0e0,
+                     "liver": 0e0, "urine": 0e0, "feces": (1 - k) * flux_diet,
+                     "muscle": 0e0, "bone": 0e0, "skin": 0e0, "kidney": 0e0},
+            "plasma": {"diet": 0.0, "plasma": 0e0, "RBC": t * 0.18e0,
+                       "liver": t * 2.64e0, "urine": 0e0,
+                       "feces": 0.75 * k * flux_diet, "muscle": t * 0.0035e0,
+                       "bone": flux_bone, "skin": 0.125 * k * flux_diet,
+                       "kidney": 0.625 * k * flux_diet},
+            "RBC": {"diet": 0.0, "plasma": t * 0.18e0, "RBC": 0e0,
+                    "liver": 0.0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0,
+                    "bone": 0e0, "skin": 0e0, "kidney": 0e0},
+            "liver": {"diet": 0.0, "plasma": t * 2.64e0, "RBC": 0e0,
+                      "liver": 0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0,
+                      "bone": 0e0, "skin": 0e0, "kidney": 0e0},
+            "urine": {"diet": 0.0, "plasma": 0e0, "RBC": 0e0, "liver": 0e0,
+                      "urine": 0e0, "feces": 0e0, "muscle": 0e0, "bone": 0e0,
+                      "skin": 0e0, "kidney": 0e0},
+            "feces": {"diet": 0.0, "plasma": 0e0, "RBC": 0e0, "liver": 0e0,
+                      "urine": 0e0, "feces": 0e0, "muscle": 0e0, "bone": 0e0,
+                      "skin": 0e0, "kidney": 0e0},
+            "muscle": {"diet": 0.0, "plasma": t * 0.0035e0, "RBC": 0e0,
+                       "liver": 0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0,
+                       "bone": 0e0, "skin": 0e0, "kidney": 0e0},
+            "bone": {"diet": 0.0, "plasma": flux_bone, "RBC": 0e0,
+                     "liver": 0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0,
+                     "bone": 0e0, "skin": 0e0, "kidney": 0e0},
+            "skin": {"diet": 0.0, "plasma": 0e0, "RBC": 0e0, "liver": 0e0,
+                     "urine": 0e0, "feces": 0e0, "muscle": 0e0, "bone": 0e0,
+                     "skin": 0e0, "kidney": 0e0},
+            "kidney": {"diet": 0.0, "plasma": 0.5 * k * flux_diet, "RBC": 0e0,
+                       "liver": 0e0, "urine": 0.125 * k * flux_diet,
+                       "feces": 0e0, "muscle": 0e0, "bone": 0e0, "skin": 0e0,
+                       "kidney": 0e0}}
 
     def parameters(self):
-        """ Define the time parameters, the isotopic standard and the boxes, flux and partition coefficients """
+        """ Define the time parameters, the isotopic standard and the boxes, 
+        flux and partition coefficients """
         n_timestep = 100000
         self.time = linspace(0, 18250.0, n_timestep) # temps
 
@@ -78,19 +104,23 @@ A simple engine that perform the computation
         }
 
         #coeff_KU=1/0.9993e0;
-        coeff_KU=1/0.9998e0;
-        coeff_PRBC=1.00025e0
-        coeff_PS=1.000275;
-        coeff_PM=0.99986;
-        coeff_PB=1.0003;
-        coeff_PL=0.99939;
-        #coeff_DP=1.00018,
+        coeff_KU = 1 / 0.9998e0;
+        coeff_PRBC = 1.00025e0
+        coeff_PS = 1.000275;
+        coeff_PM = 0.99986;
+        coeff_PB = 1.0003;
+        coeff_PL = 0.99939;
+        coeff_DP=1.00018,
         #coeff_PD=1.00025;
-        coeff_PD=1.000;
+        coeff_PD = 1.000;
 
         self.Partcoeff = {
-            "diet": {"diet": 1.0, "plasma": coeff_DP, "RBC": 1e0, "liver": 1e0, "urine": 1e0, "feces": 1e0, "muscle": 1e0, "bone": 1e0, "skin": 1e0, "kidney":1e0},
-            "plasma": {"diet": 1.0, "plasma": 1e0, "RBC": coeff_PRBC, "liver": coeff_PL, "urine": 1e0, "feces": coeff_PD, "muscle": coeff_PM, "bone":coeff_PB, "skin": coeff_PS, "kidney":1/coeff_KU},
+            "diet": {"diet": 1.0, "plasma": coeff_DP, "RBC": 1e0, "liver": 1e0,
+                     "urine": 1e0, "feces": 1e0, "muscle": 1e0, "bone": 1e0,
+                     "skin": 1e0, "kidney": 1e0},
+            "plasma": {"diet": 1.0, "plasma": 1e0, "RBC": coeff_PRBC,
+                       "liver": coeff_PL, "urine": 1e0, "feces": coeff_PD,
+                       "muscle": coeff_PM, "bone":coeff_PB, "skin": coeff_PS, "kidney":1/coeff_KU},
             "RBC": {"diet": 1.0, "plasma": 1e0, "RBC": 1e0, "liver": 1/coeff_PRBC, "urine": 1e0, "feces": 1e0, "muscle": 1e0, "bone":1e0, "skin": 1e0, "kidney":1e0},
             "liver": {"diet": 1.0, "plasma": 1/coeff_PL, "RBC": 1e0, "liver": 1e0, "urine": 1e0, "feces": 1e0, "muscle": 1e0, "bone":1e0, "skin": 1e0, "kidney":1e0},
             "urine": {"diet": 1.0, "plasma": 1e0, "RBC": 1e0, "liver": 1e0, "urine": 1e0, "feces": 1e0, "muscle": 1e0, "bone":1e0, "skin": 1e0, "kidney":1e0},
@@ -102,7 +132,6 @@ A simple engine that perform the computation
             }
 
 
-    def plot_gaypride(self, Delta, outdir=None):
-       """ Draw a contour plot with the final values as a function of the isotopic composition of the diet and the isotopic fractionation during intestinal absorption """
-       levels = [-0.2, -0.1,0,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7]
-        plt.contourf(Delta[0,8], coeff_DP, Delta_final[4],levels)
+if __name__ == "__main__":
+    engine = ZnCompoIsoDiet()
+    engine.start()

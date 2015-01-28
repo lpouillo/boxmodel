@@ -16,10 +16,10 @@ Klervia Jaouen (http://tel.archives-ouvertes.fr/tel-00781645).
 Installation
 ------------
 Packages requirements
-- python 		2.7
-- numpy 		1.7.1
+- python 			2.7
+- numpy 			1.7.1
 - scipy			0.12
-- matplotlib	1.2.1
+- matplotlib			1.2.1
 - pydot			1.0.28
 - execo			2.4.3
 
@@ -41,14 +41,14 @@ Finally clone the repository
 Usage
 -----
 The IsotopicBoxModel is a basic engine that can be derived to build specific element model. It does not work by itself.
-You can run the demo by typing:
+You can run the demos located in src/ directory by typing:
 
     # Evolution of the iron ratio
-    execo-run FeSimple -ML 	        
+    python FeSimple.py -ML
     # Evolution of the zinc ratio
-    execo-run ZnCalibration -ML		
-    # Evolution of the zinc ratio for a given parameter range (Diet ratio variation) 
-    execo-run ZnDietRatio -ML		
+    python ZnCalibration.py  -ML
+    # Evolution of the zinc ratio for a given parameter range (Diet ratio variation)
+    python ZnDietRatio.py  -ML
 
 Demo
 ----
@@ -56,5 +56,4 @@ The proposed model is a simple simulation of the Fe ratio evolution in a human b
 It can be run using:
 	execo-run FeModel -ML
 
-Building customized model
--------------------------
+
