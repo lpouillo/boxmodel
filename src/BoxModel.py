@@ -11,32 +11,27 @@ This tools released under the GNU Public
 License, version 3 or later.
 '''
 from pprint import pformat
-from os import path, mkdir, listdir
+from os import path, mkdir
 from random import gauss
 from execo_engine import Engine, ParamSweeper, sweep, slugify, logger
 from execo.log import set_style
 from numpy import linspace, array, zeros, absolute
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt 
-import gc
 from pydot import Dot, Node, Edge
 
 
-
-
-
-class IsotopicBoxModel(Engine):
+class BoxModel(Engine):
     """ 
     This is the main engine that is used to created custom isotopic models
     """ 
     def __init__(self):
         """ Add options for the number of measures, migration bandwidth, number of nodes
         walltime, env_file or env_name, stress, and clusters and initialize the engine """
-        super(IsotopicBoxModel, self).__init__()
+        super(BoxModel, self).__init__()
         self.init_plots()
         logger.setLevel('INFO')
         logger.info(set_style('\n\n                 Welcome to the human isotopic Box Model\n', 'log_header'))
-        logger.debug(pformat(self.__dict__))
             
     def initial_state(self, outdir = None):
         """ Convert the dict given from parameters to Numpy array """
@@ -54,7 +49,7 @@ class IsotopicBoxModel(Engine):
         self._Flux = array( [ box.values() for box in self.Flux.values() ])
         self._Partcoeff = array( [ box.values() for box in self.Partcoeff.values() ])
         
-        f = open(outdir+'/Delta.initial', 'w')
+        f = open(outdir+'Delta.initial', 'w')
         for box, value in self.Boxes.iteritems():
             f.write(box+' '+str(value['Delta'])+'\n')
         f.close()
@@ -74,8 +69,6 @@ class IsotopicBoxModel(Engine):
         self.plot_evolution(Delta, outdir = outdir)
         return Delta
     
-    
-        
     def evol_ratio(self, ratio, t):
         """ The evolution function that can be used for isotopic ratio evolution"""
         rationew = zeros(ratio.size)
@@ -96,7 +89,7 @@ class IsotopicBoxModel(Engine):
                     ''.ljust(8)+''.join( [ set_style(box.rjust(10), 'emph') for box in self.Boxes.iterkeys() ])+
                     set_style('\n'+'Delta'.ljust(8), 'object_repr')+''.join( [ str(round(delta, 7)).rjust(10) for delta in Delta_final if absolute(delta) < 1000]))
         self.plot_state(self.Boxes.keys(), Delta_final, name = '_final', outdir = outdir)
-        f = open(outdir+'/Delta.final', 'w')
+        f = open(outdir+'Delta.final', 'w')
         for box in self.Boxes.iterkeys():
             idx = self.Boxes.keys().index(box)
             f.write(box+' '+str(Delta_final[idx])+'\n')
@@ -149,14 +142,9 @@ class IsotopicBoxModel(Engine):
         graph.write_png(outfile)
         logger.info('State has been saved to '+set_style(outfile, 'emph'))
         
-        
-        del graph
-        gc.collect()
-        
-        
     def plot_evolution(self, Delta, outdir = None):
         """ Draw a graph of the boxes evolution through years"""
-        fig = plt.figure()
+        plt.figure()
         i_box = 0
         for box in self.Boxes:
             # remove deriving boxes 
@@ -173,9 +161,6 @@ class IsotopicBoxModel(Engine):
         plt.savefig(outfile)
         logger.info('Evolution has been saved to '+set_style(outfile, 'emph'))    
         
-        fig.clf()
-        plt.close()
         
-        gc.collect()
         
         

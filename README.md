@@ -16,27 +16,23 @@ Klervia Jaouen (http://tel.archives-ouvertes.fr/tel-00781645).
 Installation
 ------------
 Packages requirements
-- python 	2.7
-- numpy 	1.7.1
-- scipy		0.12
+- python 		2.7
+- numpy 		1.7.1
+- scipy			0.12
 - matplotlib	1.2.1
-- pydot		1.0.28
-- execo		2.1
+- pydot			1.0.28
+- execo			2.4.3
 
 
-Installing required packages
-Debian
+Installing packages on Debian/Ubuntu
 
-    sudo apt-get install git graphviz python-setuptools libatlas3-base libatlas-dev libblas3 libblas-dev liblapack3 liblapack-dev build-essential gfortran libfreetype6-dev libpng1.2-dev
-
-Ubuntu
-
-    sudo apt-get install git graphviz python-setuptools libatlas3gf-base libatlas-dev libblas3gf libblas-dev liblapack3gf liblapack-dev build-essential gfortran libfreetype6-dev libpng12-dev
+    apt-get install graphviz python-setuptools python-graphviz python-scipy \
+    python-numpy python-matplotlib python-networkx
       
 And then
     
-    sudo easy_install numpy==1.7.1 scipy==0.12 matplotlib==1.2.1 pydot
-    wget http://execo.gforge.inria.fr/downloads/execo-2.1.tar.gz && tar xzf execo-2.1.tar.gz && cd execo-2.1/ && sudo make install
+    easy_install execo
+    
 
 Finally clone the repository
 
