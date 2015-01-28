@@ -7,26 +7,26 @@ class FeSimple(IsotopicBoxModel):
     A simple engine that compute the evolution of Delta66Fe
     """
     def __init__(self):
-        """ Add options for the number of measures, migration bandwidth, number of nodes
-        walltime, env_file or env_name, stress, and clusters and initialize the engine """
+        """Load the model parameters and set delta name"""
         super(FeSimple, self).__init__()
         self.parameters()
         self.delta_name = r"$\delta^{66}Fe$"
 
     def run(self):
-        """ Execute the engine and compute the results """        
+        """ Execute the engine and compute the results """
         Delta = self.initial_state()
         Delta = self.compute_evolution(Delta)
         self.final_state(Delta[-1, :])
 
     def parameters(self):
-        """ Define the time parameters, the isotopic standard and  the boxes, flux and partition coefficients """
-        n_timestep = 10000
-        self.time = linspace(0, 13870.0, n_timestep)  # temps
-
+        """ Define the time parameters, the isotopic standard and
+        the boxes, flux and partition coefficients """
+        n_timestep = 1000
+        # temps
+        self.time = linspace(0, 13870.0, n_timestep)
         # IRMM standard
         self.standard = 0.0637
-
+        # Define Initial Box Delta and Mass
         self.Boxes = {
             "diet":     {'Delta':  1.0e0, 'Mass':  1e12},
             "plasma":   {'Delta': 1.51e0, 'Mass':   3e0},
@@ -36,6 +36,7 @@ class FeSimple(IsotopicBoxModel):
             "feces":    {'Delta':  0.1e0, 'Mass':  1e-0},
             "menses":   {'Delta':  2.5e0, 'Mass':  1e-2}
             }
+        # Define Flux between Boxes
         self.Flux = {
             "diet":     {"diet": 0.0, "plasma":  1.3, "RBC":  0.0,
                          "liver": 0.0, "urine": 0.0, "feces": 0.0,
@@ -59,6 +60,7 @@ class FeSimple(IsotopicBoxModel):
                          "liver": 0.0, "urine": 0.0, "feces": 0.0,
                          "menses": 0.0}
             }
+        # Define Partition coefficient between Boxes
         self.Partcoeff = {
             "diet":     {"diet": 1e0, "plasma": 1e0, "RBC": 1e0, "liver": 1e0,
                          "urine": 1e0, "feces": 1e0, "menses": 1e0},
