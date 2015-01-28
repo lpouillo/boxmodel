@@ -50,10 +50,5 @@ You can run the demos located in src/ directory by typing:
     # Evolution of the zinc ratio for a given parameter range (Diet ratio variation)
     python ZnDietRatio.py  -ML
 
-Demo
-----
-The proposed model is a simple simulation of the Fe ratio evolution in a human body. 
-It can be run using:
-	execo-run FeModel -ML
 
 
