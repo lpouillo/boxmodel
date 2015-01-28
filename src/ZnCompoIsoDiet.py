@@ -6,13 +6,16 @@ from numpy import arange
 
 class ZnCompoIsoDiet(IsotopicBoxModel):
     """
-    An engine that perform the computation of the evolution of Zn isotopic 
+    An engine that perform the computation of the evolution of Zn isotopic
     ratio as a function of Diet value
     """
     def __init__(self):
         """Set delta_name"""
         super(ZnCompoIsoDiet, self).__init__()
         self.delta_name = r"$\delta^{66}Zn$"
+        self.time = linspace(0, 18250.0, 100000)
+        # JMC standard
+        self.standard = 0.565203
 
     def run(self):
         """ Execute the engine and compute the results """
@@ -87,23 +90,17 @@ class ZnCompoIsoDiet(IsotopicBoxModel):
     def set_boxes(self, delta_diet):
         """ Define the time parameters, the isotopic standard and the boxes,
         flux and partition coefficients """
-        n_timestep = 100000
-        self.time = linspace(0, 18250.0, n_timestep)
-
-        # JMC standard
-        self.standard = 0.565203
-
         self.Boxes = {
-            "diet": {'Delta': delta_diet, 'Mass': 1e12},
-            "plasma": {'Delta': 0e0, 'Mass': 3e0},
-            "RBC": {'Delta': 0e0, 'Mass': 2.5e1},
-            "liver": {'Delta': 0e0, 'Mass': 1.3e2},
-            "urine": {'Delta': 0e0, 'Mass': 1e1},
-            "feces": {'Delta': 0e0, 'Mass': 1e1},
-            "muscle": {'Delta': 0e0, 'Mass': 1.5e3},
-            "bone": {'Delta': 0.48e0, 'Mass': 7.7e2},
-            "skin": {'Delta': 0e0, 'Mass': 1.6e2},
-            "kidney": {'Delta': 0e0, 'Mass': 2e1}
+            "diet":     {'Delta': delta_diet,   'Mass': 1e12},
+            "plasma":   {'Delta': 0e0,          'Mass': 3e0},
+            "RBC":      {'Delta': 0e0,          'Mass': 2.5e1},
+            "liver":    {'Delta': 0e0,          'Mass': 1.3e2},
+            "urine":    {'Delta': 0e0,          'Mass': 1e1},
+            "feces":    {'Delta': 0e0,          'Mass': 1e1},
+            "muscle":   {'Delta': 0e0,          'Mass': 1.5e3},
+            "bone":     {'Delta': 0.48e0,       'Mass': 7.7e2},
+            "skin":     {'Delta': 0e0,          'Mass': 1.6e2},
+            "kidney":   {'Delta': 0e0,          'Mass': 2e1}
         }
 
     def set_partcoeff(self, coeff_DP):
@@ -155,4 +152,3 @@ class ZnCompoIsoDiet(IsotopicBoxModel):
 if __name__ == "__main__":
     engine = ZnCompoIsoDiet()
     engine.start()
-    

@@ -45,12 +45,12 @@ class IsotopicBoxModel(Engine):
                     style.object_repr('\n' + 'Delta'.ljust(8)) +
                     ''.join([str(box['Delta']).rjust(10)
                              for box in self.Boxes.itervalues()]) +
-                    style.object_repr('\n'+'Mass'.ljust(8)) +
+                    style.object_repr('\n' + 'Mass'.ljust(8)) +
                     ''.join([str(box['Mass']).rjust(10)
                              for box in self.Boxes.itervalues()])
                     )
         if outdir is None:
-            outdir = self.result_dir+'/'
+            outdir = self.result_dir + '/'
         self.plot_state(self.Boxes.keys(),
                         array([box['Delta']
                                for box in self.Boxes.itervalues()]),
@@ -63,9 +63,9 @@ class IsotopicBoxModel(Engine):
         self._Partcoeff = array([box.values()
                                  for box in self.Partcoeff.values()])
 
-        f = open(outdir+'/Delta.initial', 'w')
+        f = open(outdir + '/Delta.initial', 'w')
         for box, value in self.Boxes.iteritems():
-            f.write(box+' '+str(value['Delta'])+'\n')
+            f.write(box + ' ' + str(value['Delta']) + '\n')
         f.close()
         return [box['Delta'] for box in self.Boxes.itervalues()]
 
@@ -78,7 +78,7 @@ class IsotopicBoxModel(Engine):
             outdir = self.result_dir
         Ratio = [(delta / 1e3 + 1e0) * self.standard for delta in Delta]
         Ratio = odeint(func, Ratio, self.time)
-        Delta = ((Ratio/self.standard)-1.0)*1000
+        Delta = ((Ratio / self.standard) - 1.0) * 1000
         self.plot_evolution(Delta, outdir=outdir)
         return Delta
 
@@ -89,9 +89,9 @@ class IsotopicBoxModel(Engine):
             outflux = 0
             influx = 0
             for jj in range(ratio.size):
-                outflux = outflux + self._Flux[ii][jj]/self._Mass[ii] * \
+                outflux = outflux + self._Flux[ii][jj] / self._Mass[ii] * \
                     self._Partcoeff[ii][jj] * ratio[ii]
-                influx = influx + self._Flux[jj][ii]/self._Mass[ii] * \
+                influx = influx + self._Flux[jj][ii] / self._Mass[ii] * \
                     self._Partcoeff[jj][ii] * ratio[jj]
             rationew[ii] = influx - outflux
         return rationew
@@ -103,15 +103,16 @@ class IsotopicBoxModel(Engine):
         logger.info(style.log_header('Final boxes state\n',) + ''.ljust(8) +
                     ''.join([style.emph(box.rjust(10))
                             for box in self.Boxes.iterkeys()]) +
-                    style.objec_repr('\n'+'Delta'.ljust(8)) +
+                    style.objec_repr('\n' + 'Delta'.ljust(8)) +
                     ''.join([str(round(delta, 7)).rjust(10)
-                            for delta in Delta_final if absolute(delta) < 1000]))
+                            for delta in Delta_final
+                            if absolute(delta) < 1000]))
         self.plot_state(self.Boxes.keys(), Delta_final,
                         name='_final', outdir=outdir)
-        f = open(outdir+'/Delta.final', 'w')
+        f = open(outdir + '/Delta.final', 'w')
         for box in self.Boxes.iterkeys():
             idx = self.Boxes.keys().index(box)
-            f.write(box+' '+str(Delta_final[idx])+'\n')
+            f.write(box + ' ' + str(Delta_final[idx]) + '\n')
         f.close()
 
     def init_plots(self):
@@ -120,7 +121,7 @@ class IsotopicBoxModel(Engine):
             "diet":   {'color': "#BBFFB5", 'shape': "s"},
             "plasma": {'color': "#D6DE42", 'shape': "o"},
             "RBC":    {'color': "#FF3A25", 'shape': "o"},
-            "liver":  {'color': "#93BB8F", 'shape': "o"}, 
+            "liver":  {'color': "#93BB8F", 'shape': "o"},
             "urine":  {'color': "#FBFF93", 'shape': "s"},
             "feces":  {'color': "#BF9285", 'shape': "s"},
             "menses": {'color': "#FF0600", 'shape': "s"},
@@ -190,11 +191,10 @@ class IsotopicBoxModel(Engine):
         plt.ylabel(self.delta_name)
         if outdir is None:
             outdir = self.result_dir
-        outfile = outdir+'/evolution.png'
+        outfile = outdir + '/evolution.png'
         plt.savefig(outfile)
         logger.info('Evolution has been saved to ' + style.emph(outfile))
         fig.clf()
         plt.close()
         gc.collect()
 
-        
