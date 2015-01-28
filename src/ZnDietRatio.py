@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 from pprint import pformat
-
 from IsotopicBoxModel import IsotopicBoxModel, sweep, ParamSweeper, slugify, \
     logger, path, mkdir, linspace, style
-
-
 
 
 class ZnDietRatio(IsotopicBoxModel):
@@ -21,7 +18,7 @@ class ZnDietRatio(IsotopicBoxModel):
         parameters = {'flux_diet': range(7, 12),
                       'flux_bone': [0.0029 * i for i in range(1, 4, 3)]}
         logger.info('Exploring following parameters \n%s', pformat(parameters))
-        
+
         sweeps = sweep(parameters)
         sweeper = ParamSweeper(path.join(self.result_dir, "sweeps"), sweeps)
         total_comb = len(sweeper.get_remaining())

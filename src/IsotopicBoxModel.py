@@ -155,19 +155,15 @@ class IsotopicBoxModel(Engine):
                         gr.add_edge(box_to, box_from,
                                     attrib={'flux': flux})
         pos = nx.graphviz_layout(gr, prog='neato')
-        
+
         for p in gr.nodes():
             nx.draw_networkx_nodes(gr, pos, nodelist=[p],
                                    node_color=self.plots_conf[p]['color'],
                                    node_shape=self.plots_conf[p]['shape'])
-        for f, t, att in gr.edges(data=True):
-            print f, t, att['flux']
-
-        
+#        for f, t, att in gr.edges(data=True):
+#            print f, t, att['flux']
 #        pos = nx.spring_layout(gr)
-         
 #        nx.draw(gr, pos)
-        
 #        nx.draw_networkx_labels(gr, pos)
         plt.axis('off')
         if outdir is None:

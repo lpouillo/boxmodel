@@ -1,26 +1,28 @@
 #!/usr/bin/env python
-from IsotopicBoxModel import *
+from IsotopicBoxModel import IsotopicBoxModel, sweep, ParamSweeper, slugify, \
+    logger, path, mkdir, linspace
+
 
 class ZnCompoIsoDiet(IsotopicBoxModel):
     """
 A simple engine that perform the computation
 """
     def __init__(self):
-        """ Add options for the number of measures, migration bandwidth, number of nodes
-walltime, env_file or env_name, stress, and clusters and initialize the engine """
+        """Set delta_name"""
         super(ZnCompoIsoDiet, self).__init__()
         self.parameters()
         self.delta_name = r"$\delta^{66}Zn$"
-    
+
     def run(self):
         """ Execute the engine and compute the results """
-        parameters = {'delta_diet': range(-0.1,1.0), 'coeff_DP' : range(0.9996, 1.0004)}
+        parameters = {'delta_diet': range(-0.1, 1.0),
+                      'coeff_DP': range(0.9996, 1.0004)}
         sweeps = sweep(parameters)
-        sweeper = ParamSweeper( path.join(self.result_dir, "sweeps"), sweeps)
-             
-        while len(sweeper.get_remaining()) >0:
+        sweeper = ParamSweeper(path.join(self.result_dir, "sweeps"), sweeps)
+
+        while len(sweeper.get_remaining()) > 0:
             comb = sweeper.get_next()
-            comb_dir = self.result_dir +'/'+ slugify(comb)
+            comb_dir = self.result_dir + '/' + slugify(comb)
             try:
                 mkdir(comb_dir)
             except:
@@ -32,14 +34,14 @@ walltime, env_file or env_name, stress, and clusters and initialize the engine "
             self.final_state(Delta[-1,:], outdir = comb_dir)
             sweeper.done(comb)
             logger.info('Combination done\n')
- 
+
         logger.info('All combinations have been done, result can be founc in '+self.result_dir)
-        
+
     def set_flux(self, flux_diet, flux_bone):
         k = 0.33
         t = 1
-        flux_diet=12
-        flux_bone=0.01
+        flux_diet = 12
+        flux_bone = 0.01
         logger.info('Using flux_diet = '+str(flux_diet)+' and flux_bone = '+str(flux_bone))
         self.Flux = {
             "diet": {"diet": 0.0, "plasma": k*flux_diet, "RBC": 0e0, "liver": 0e0, "urine": 0e0, "feces": (1-k)*flux_diet, "muscle": 0e0, "bone": 0e0, "skin": 0e0, "kidney":0e0},
@@ -53,15 +55,15 @@ walltime, env_file or env_name, stress, and clusters and initialize the engine "
             "skin": {"diet": 0.0, "plasma": 0e0, "RBC": 0e0, "liver": 0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0, "bone": 0e0, "skin": 0e0, "kidney":0e0},
             "kidney": {"diet": 0.0,"plasma": 0.5*k*flux_diet, "RBC": 0e0, "liver": 0e0, "urine": 0.125*k*flux_diet, "feces": 0e0, "muscle": 0e0, "bone": 0e0, "skin": 0e0, "kidney":0e0}}
 
-    
+
     def parameters(self):
         """ Define the time parameters, the isotopic standard and the boxes, flux and partition coefficients """
         n_timestep = 100000
         self.time = linspace(0, 18250.0, n_timestep) # temps
-         
+
         # JMC standard
         self.standard = 0.565203
-         
+
         self.Boxes = {
             "diet": {'Delta': delta_diet, 'Mass': 1e12},
             "plasma": {'Delta': 0e0, 'Mass': 3e0},
@@ -74,7 +76,7 @@ walltime, env_file or env_name, stress, and clusters and initialize the engine "
             "skin": {'Delta': 0e0, 'Mass': 1.6e2},
             "kidney": {'Delta': 0e0, 'Mass': 2e1}
         }
-        
+
         #coeff_KU=1/0.9993e0;
         coeff_KU=1/0.9998e0;
         coeff_PRBC=1.00025e0
@@ -98,9 +100,9 @@ walltime, env_file or env_name, stress, and clusters and initialize the engine "
             "skin": {"diet": 1.0, "plasma": 1e0, "RBC": 1e0, "liver": 1e0, "urine": 1e0, "feces": 1e0, "muscle": 1e0, "bone":1e0, "skin": 1e0, "kidney":1e0},
             "kidney": {"diet": 1.0, "plasma": coeff_KU, "RBC": 1e0, "liver": 1e0, "urine": coeff_KU, "feces": 1e0, "muscle": 1e0, "bone":1e0, "skin": 1e0, "kidney":1e0}
             }
-            
 
-   def plot_gaypride(self, Delta, outdir=None):
+
+    def plot_gaypride(self, Delta, outdir=None):
        """ Draw a contour plot with the final values as a function of the isotopic composition of the diet and the isotopic fractionation during intestinal absorption """
        levels = [-0.2, -0.1,0,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7]
         plt.contourf(Delta[0,8], coeff_DP, Delta_final[4],levels)
