@@ -10,7 +10,7 @@ class FeSimple(IsotopicBoxModel):
         """Load the model parameters and set delta name"""
         super(FeSimple, self).__init__()
         self.parameters()
-        self.delta_name = r"$\delta^{66}Fe$"
+        self.delta_name = r"$\delta^{56}Fe$"
 
     def run(self):
         """ Execute the engine and compute the results """
