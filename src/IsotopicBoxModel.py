@@ -147,11 +147,11 @@ class IsotopicBoxModel(Engine):
             for box_to, flux in boxes_to.iteritems():
                 if flux != 0:
                     if flux > 0:
-                        print box_from, box_to
+                        #print box_from, box_to
                         gr.add_edge(box_from, box_to,
                                     attrib={'flux': flux})
                     elif flux < 0:
-                        print box_to, box_from
+                        #print box_to, box_from
                         gr.add_edge(box_to, box_from,
                                     attrib={'flux': flux})
         pos = nx.graphviz_layout(gr, prog='neato')
@@ -170,7 +170,7 @@ class IsotopicBoxModel(Engine):
             outdir = self.result_dir
 
         outfile = outdir + '/state' + name + '.png'
-        
+
         plt.savefig(outfile)
         plt.close()
         logger.info('State has been saved to ' + style.emph(outfile))
