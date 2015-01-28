@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from pprint import pformat
 from IsotopicBoxModel import IsotopicBoxModel, sweep, ParamSweeper, slugify, \
     logger, path, mkdir, linspace, style
 from numpy import arange
@@ -30,6 +31,8 @@ class ZnCompoIsoDiet(IsotopicBoxModel):
 
         while len(sweeper.get_remaining()) > 0:
             comb = sweeper.get_next()
+            logger.info(style.comb(' Performing new combination ') + '\n%s',
+                        pformat(comb))
             comb_dir = self.result_dir + '/' + slugify(comb)
             try:
                 mkdir(comb_dir)
@@ -50,8 +53,6 @@ class ZnCompoIsoDiet(IsotopicBoxModel):
 
     def set_flux(self, flux_DP, flux_PB):
         """Change value"""
-        logger.info('Using flux_DP = %s and flux_PB = %s', flux_DP,
-                    flux_PB)
         self.Flux = {
             "diet": {"diet": 0.0, "plasma": flux_DP, "RBC": 0e0,
                      "liver": 0e0, "urine": 0e0, "feces": flux_DP,
