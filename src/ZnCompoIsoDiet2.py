@@ -102,7 +102,7 @@ class ZnCompoIsoDiet(IsotopicBoxModel):
         """ Define the time parameters, the isotopic standard and the boxes,
         flux and partition coefficients """
         self.Boxes = {
-            "diet":     {'Delta': delta_diet,   'Mass': 1e12},
+            "diet":     {'Delta': delta_diet,   'Mass': 1e18},
             "plasma":   {'Delta': 0e0,          'Mass': 3e0},
             "RBC":      {'Delta': 0e0,          'Mass': 2.5e1},
             "liver":    {'Delta': 0e0,          'Mass': 1.3e2},
