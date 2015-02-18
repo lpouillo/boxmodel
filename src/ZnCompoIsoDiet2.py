@@ -3,8 +3,8 @@ from pprint import pformat
 from IsotopicBoxModel import IsotopicBoxModel, sweep, ParamSweeper, slugify, \
     logger, path, mkdir, linspace, style
 from numpy import arange
-#from random import gauss
-#from pylab import *
+from random import gauss
+from pylab import *
 
 
 class ZnCompoIsoDiet(IsotopicBoxModel):
