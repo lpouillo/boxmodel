@@ -54,16 +54,32 @@ class ZnCalibration(IsotopicBoxModel):
             "kidney": {"diet": 0.0, "plasma": 2.0e0, "RBC": 0e0, "liver": 0e0, "urine": 0.5e0, "feces": 0e0, "muscle": 0e0, "bone": 0e0, "skin": 0e0, "kidney":0e0}
             }
         # Coefficients de partage
+     #Coeff Monte Carlo
+       # coeff_KU = 1 / 0.9998e0
+        #coeff_PRBC = 1.00025e0
+        #coeff_PS = 1.000275
+        #coeff_PM = 0.99986
+        #coeff_PB = 1.0003
+        #coeff_PL = 0.99939
+        #coeff_PD = 1.000
+        #Coeff souris
+        #coeff_KU = 1e0
+        #coeff_PRBC = 1.00061e0
+        #coeff_PS = 1.00027
+        #coeff_PM = 0.99987
+        #coeff_PB = 1.00053
+        #coeff_PL = 0.99965
+        #coeff_PD = 1.000
         
-        #coeff_KU=1/0.9993e0;
-        coeff_KU=1/0.9998e0;
-        coeff_PRBC=1.00025e0
-        coeff_PS=1.000275;
-        coeff_PM=0.99986;
-        coeff_PB=1.0003;
-        coeff_PL=0.99939;
-        #coeff_PD=1.00025;
-        coeff_PD=1.000;
+        #Coeff humain
+        coeff_KU = 1e0
+        coeff_PRBC = 1.00025e0
+        coeff_PS = 0.99965
+        coeff_PM = 0.99986
+        coeff_PB = 1.0003
+        coeff_PL = 0.99939
+        coeff_PD = 1.000
+        
 
         self.Partcoeff = {
             "diet":   {"diet": 1.0, "plasma": 1.00018e0, "RBC": 1e0, "liver": 1e0, "urine": 1e0, "feces": 1e0, "muscle": 1e0, "bone": 1e0, "skin": 1e0, "kidney":1e0},
