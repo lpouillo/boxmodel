@@ -107,6 +107,7 @@ class ZnCompoIsoDiet(IsotopicBoxModel):
     def set_partcoeff(self, coeff_DP):
         """Change the value of the Partition Coefficient between Diet
         and Plasma"""
+        #Coeff Monte Carlo
        # coeff_KU = 1 / 0.9998e0
         #coeff_PRBC = 1.00025e0
         #coeff_PS = 1.000275
@@ -114,7 +115,7 @@ class ZnCompoIsoDiet(IsotopicBoxModel):
         #coeff_PB = 1.0003
         #coeff_PL = 0.99939
         #coeff_PD = 1.000
-        
+        #Coeff souris
         coeff_KU = 1e0
         coeff_PRBC = 1.00061e0
         coeff_PS = 1.00027
@@ -122,7 +123,16 @@ class ZnCompoIsoDiet(IsotopicBoxModel):
         coeff_PB = 1.00053
         coeff_PL = 0.99965
         coeff_PD = 1.000
-
+        
+        #Coeff humain
+        coeff_KU = 1e0
+        coeff_PRBC = 1.00025e0
+        coeff_PS = 0.99965
+        coeff_PM = 0.99986
+        coeff_PB = 1.0003
+        coeff_PL = 0.99939
+        coeff_PD = 1.000
+        
         self.Partcoeff = {
             "diet": {"diet": 1.0, "plasma": coeff_DP, "RBC": 1e0, "liver": 1e0,
                      "urine": 1e0, "feces": 1e0, "muscle": 1e0, "bone": 1e0,
