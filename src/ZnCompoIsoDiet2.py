@@ -45,6 +45,14 @@ class ZnCompoIsoDiet(IsotopicBoxModel):
             Delta = self.initial_state(outdir=comb_dir)
             Delta = self.compute_evolution(Delta, outdir=comb_dir)
             self.final_state(Delta[-1, :], outdir=comb_dir)
+            levels = [-0.2, -0.1,0,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7]
+            p1=contourf(delta_D,coeff_DP, delta_RBC_final, levels)
+            ylabel(r"coeff_diet$")
+            xlabel(r"$delta_D$")
+            xlim([0,1])
+            cbar = colorbar(p1)
+            cbar.ax.set_ylabel ('d66Zn')
+            show()
             sweeper.done(comb)
             logger.info('Combination done\n')
 
