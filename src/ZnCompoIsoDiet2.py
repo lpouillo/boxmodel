@@ -65,7 +65,7 @@ class ZnCompoIsoDiet(IsotopicBoxModel):
         """Change value"""
         self.Flux = {
             "diet": {"diet": 0.0, "plasma": flux_DP, "RBC": 0e0,
-                     "liver": 0e0, "urine": 0e0, "feces": flux_DP,
+                     "liver": 0e0, "urine": 0e0, "feces": 1.5*flux_DP,
                      "muscle": 0e0, "bone": 0e0, "skin": 0e0, "kidney": 0e0},
             "plasma": {"diet": 0.0, "plasma": 0e0, "RBC": 0.18e0,
                        "liver": 2.64e0, "urine": 0e0,
