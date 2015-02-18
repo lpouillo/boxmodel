@@ -116,13 +116,13 @@ class ZnCompoIsoDiet(IsotopicBoxModel):
         #coeff_PL = 0.99939
         #coeff_PD = 1.000
         #Coeff souris
-        coeff_KU = 1e0
-        coeff_PRBC = 1.00061e0
-        coeff_PS = 1.00027
-        coeff_PM = 0.99987
-        coeff_PB = 1.00053
-        coeff_PL = 0.99965
-        coeff_PD = 1.000
+        #coeff_KU = 1e0
+        #coeff_PRBC = 1.00061e0
+        #coeff_PS = 1.00027
+        #coeff_PM = 0.99987
+        #coeff_PB = 1.00053
+        #coeff_PL = 0.99965
+        #coeff_PD = 1.000
         
         #Coeff humain
         coeff_KU = 1e0
