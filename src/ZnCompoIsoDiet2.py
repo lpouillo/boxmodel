@@ -107,12 +107,20 @@ class ZnCompoIsoDiet(IsotopicBoxModel):
     def set_partcoeff(self, coeff_DP):
         """Change the value of the Partition Coefficient between Diet
         and Plasma"""
-        coeff_KU = 1 / 0.9998e0
-        coeff_PRBC = 1.00025e0
-        coeff_PS = 1.000275
-        coeff_PM = 0.99986
-        coeff_PB = 1.0003
-        coeff_PL = 0.99939
+       # coeff_KU = 1 / 0.9998e0
+        #coeff_PRBC = 1.00025e0
+        #coeff_PS = 1.000275
+        #coeff_PM = 0.99986
+        #coeff_PB = 1.0003
+        #coeff_PL = 0.99939
+        #coeff_PD = 1.000
+        
+        coeff_KU = 1e0
+        coeff_PRBC = 1.00061e0
+        coeff_PS = 1.00027
+        coeff_PM = 0.99987
+        coeff_PB = 1.00053
+        coeff_PL = 0.99965
         coeff_PD = 1.000
 
         self.Partcoeff = {
