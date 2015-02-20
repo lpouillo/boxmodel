@@ -7,7 +7,7 @@ from random import gauss
 from pylab import *
 
 
-class ZnCompoIsoDiet(IsotopicBoxModel):
+class ZnModelB(IsotopicBoxModel):
     """
     An engine that perform the computation of the evolution of Zn isotopic
     ratio as a function of Diet value
@@ -179,5 +179,5 @@ class ZnCompoIsoDiet(IsotopicBoxModel):
 
 
 if __name__ == "__main__":
-    engine = ZnCompoIsoDiet()
+    engine = ZnModelB()
     engine.start()
