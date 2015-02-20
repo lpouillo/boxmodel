@@ -194,14 +194,14 @@ class IsotopicBoxModel(Engine):
         outfile = outdir + '/evolution.pdf'
         plt.savefig(outfile)
         logger.info('Evolution has been saved to ' + style.emph(outfile))
-         levels = [-0.2, -0.1,0,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7]
-          p1=contourf(delta_diet,coeff_DP, Delta[-1, 4], levels)
-          ylabel(r"coeff_diet$")
-          xlabel(r"$delta_D$")
-          xlim([0,1])
-          cbar = colorbar(p1)
-          cbar.ax.set_ylabel ('d66Zn')
-          show()
+        levels = [-0.2, -0.1,0,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7]
+        p1=contourf(delta_diet,coeff_DP, Delta[-1, 4], levels)
+        ylabel(r"coeff_diet$")
+        xlabel(r"$delta_D$")
+        xlim([0,1])
+        cbar = colorbar(p1)
+        cbar.ax.set_ylabel ('d66Zn')
+        show()
         fig.clf()
         plt.close()
         gc.collect()
