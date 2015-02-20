@@ -24,7 +24,8 @@ class ZnCompoIsoDiet(IsotopicBoxModel):
         """ Execute the engine and compute the results """
         parameters = {'delta_diet': arange(-0.8, 1.4, 0.2),
                       'coeff_DP': arange(0.9995, 1.0005, 0.00025),
-                      'flux_DP': 10}
+                      'flux_DP': 10,
+                      'flux_PB': 0.005}
         sweeps = sweep(parameters)
         sweeper = ParamSweeper(path.join(self.result_dir, "sweeps"), sweeps)
         logger.info('Engine will treat %s models',
@@ -69,7 +70,7 @@ class ZnCompoIsoDiet(IsotopicBoxModel):
             "plasma": {"diet": 0.0, "plasma": 0e0, "RBC": 0.18e0,
                        "liver": 2.64e0, "urine": 0e0,
                        "feces": 0.75 * flux_DP, "muscle": 0.0035e0,
-                       "bone": 0.005, "skin": 0.125 * flux_DP,
+                       "bone": flux_PB, "skin": 0.125 * flux_DP,
                        "kidney": 0.625 * flux_DP},
             "RBC": {"diet": 0.0, "plasma": 0.18e0, "RBC": 0e0,
                     "liver": 0.0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0,
@@ -86,7 +87,7 @@ class ZnCompoIsoDiet(IsotopicBoxModel):
             "muscle": {"diet": 0.0, "plasma": 0.0035e0, "RBC": 0e0,
                        "liver": 0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0,
                        "bone": 0e0, "skin": 0e0, "kidney": 0e0},
-            "bone": {"diet": 0.0, "plasma": 0.005, "RBC": 0e0,
+            "bone": {"diet": 0.0, "plasma": flux_PB, "RBC": 0e0,
                      "liver": 0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0,
                      "bone": 0e0, "skin": 0e0, "kidney": 0e0},
             "skin": {"diet": 0.0, "plasma": 0e0, "RBC": 0e0, "liver": 0e0,
