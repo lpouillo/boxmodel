@@ -14,7 +14,7 @@ class ZnModelB(IsotopicBoxModel):
     """
     def __init__(self):
         """Set delta_name"""
-        super(ZnCompoIsoDiet, self).__init__()
+        super(ZnModelB, self).__init__()
         self.delta_name = r"$\delta^{66}Zn$"
         self.time = linspace(0, 18250.0, 100000)
         # JMC standard
