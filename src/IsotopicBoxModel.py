@@ -226,5 +226,5 @@ class IsotopicBoxModel(Engine):
 
         plt.colorbar(fraction=0.1)
 
-#        plt.show()
+        plt.show()
         plt.savefig('test.png')
