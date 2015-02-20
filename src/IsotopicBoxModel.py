@@ -191,7 +191,7 @@ class IsotopicBoxModel(Engine):
         plt.ylabel(self.delta_name)
         if outdir is None:
             outdir = self.result_dir
-        outfile = outdir + '/evolution.png'
+        outfile = outdir + '/evolution.pdf'
         plt.savefig(outfile)
         logger.info('Evolution has been saved to ' + style.emph(outfile))
         fig.clf()
