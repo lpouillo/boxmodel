@@ -23,8 +23,7 @@ class ZnModelB(IsotopicBoxModel):
     def run(self):
         """ Execute the engine and compute the results """
         parameters = {'delta_diet': arange(-0.1, 1.5, 0.5),
-                      'coeff_DP': arange(0.9995, 1.0005, 0.0003),
-                      'flux_DP': arange(10, 11, 1)}
+                      'coeff_DP': arange(0.9995, 1.0005, 0.0003)}
         sweeps = sweep(parameters)
         sweeper = ParamSweeper(path.join(self.result_dir, "sweeps"), sweeps)
         logger.info('Engine will treat %s models',
@@ -41,7 +40,6 @@ class ZnModelB(IsotopicBoxModel):
                 pass
             self.set_boxes(comb['delta_diet'])
             self.set_partcoeff(comb['coeff_DP'])
-            self.set_flux(comb['flux_DP'])
             Delta = []
             Delta = self.initial_state(outdir=comb_dir)
             Delta = self.compute_evolution(Delta, outdir=comb_dir)
