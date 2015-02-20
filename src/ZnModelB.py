@@ -68,7 +68,7 @@ class ZnModelB(IsotopicBoxModel):
             "plasma": {"diet": 0.0, "plasma": 0e0, "RBC": 0.18e0,
                        "liver": 2.64e0, "urine": 0e0,
                        "feces": 0.75 * 10e0, "muscle": 0.0035e0,
-                       "bone": 0,005, "skin": 0.125 * 10e0,
+                       "bone": 0.005e0, "skin": 0.125 * 10e0,
                        "kidney": 0.625 * 10e0},
             "RBC": {"diet": 0.0, "plasma": 0.18e0, "RBC": 0e0,
                     "liver": 0.0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0,
