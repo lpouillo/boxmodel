@@ -22,8 +22,8 @@ class ZnCompoIsoDiet(IsotopicBoxModel):
 
     def run(self):
         """ Execute the engine and compute the results """
-        parameters = {'delta_diet': arange(-0.8, 1.4, 0.2),
-                      'coeff_DP': arange(0.9995, 1.0005, 0.00025),
+        parameters = {'delta_diet': arange(-0.1, 1.5, 0.5),
+                      'coeff_DP': arange(0.9995, 1.0005, 0.0003),
                       'flux_DP': 10,
                       'flux_PB': 0.005}
         sweeps = sweep(parameters)
