@@ -25,7 +25,7 @@ class ZnModelB(IsotopicBoxModel):
         parameters = {'delta_diet': arange(-0.7, 1.5, 0.1),
                       'coeff_DP': arange(0.9995, 1.0005, 0.0001),
                       #je ne savais pas comment definir FLux si aucun parametre ne variait dedans alors j ai fait comme ca
-                      'flux_DP': arange(10, 10, 1)}
+                      'flux_DP': arange(10, 12, 2)}
         sweeps = sweep(parameters)
         sweeper = ParamSweeper(path.join(self.result_dir, "sweeps"), sweeps)
         logger.info('Engine will treat %s models',
