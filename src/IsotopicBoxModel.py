@@ -194,15 +194,38 @@ class IsotopicBoxModel(Engine):
         outfile = outdir + '/evolution.pdf'
         plt.savefig(outfile)
         logger.info('Evolution has been saved to ' + style.emph(outfile))
-        levels = [-0.2, -0.1,0,0.1,0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7]
-        p1=contourf(delta_diet,coeff_DP, Delta[-1, 4], levels)
-        ylabel(r"coeff_diet$")
-        xlabel(r"$delta_D$")
-        xlim([0,1])
-        cbar = colorbar(p1)
-        cbar.ax.set_ylabel ('d66Zn')
         show()
         fig.clf()
         plt.close()
         gc.collect()
 
+    def peace_flag(self, boxes, param1, param2 ):
+        """ Create a contour plot of the boxes final value as a function of two parameters"""
+        logger.info('Drawing contour plot of '+','.join( [ set_style( box, 'log_header') for box in boxes] )+\
+                    ' final Delta for '+set_style(param1, 'emph')+' and '+set_style(param2, 'emph')+' ...')
+        i_box = [ self.Boxes.keys().index(box) for box in boxes]
+        
+        x = self.parameters[param1]
+        y = self.parameters[param2]
+        
+        Delta = []
+        for yy in y:
+            Delta.append([])
+            for xx in x:    
+                infile = self.result_dir +slugify([param1, xx, param2, yy])+'/Delta.final'
+                
+                f = open(infile)
+                for i, line in enumerate(f):
+                    if i in i_box:
+                        vals = line.split(' ')
+                        Delta[y.index(yy)].append( vals[1].rstrip() )
+                f.close()
+                
+        plt.contourf(x, y, Delta)
+        plt.xlabel(param1)
+        plt.ylabel(param2)
+
+        plt.colorbar(fraction=0.1)
+
+#        plt.show()
+        plt.savefig('test.png')
