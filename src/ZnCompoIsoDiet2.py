@@ -24,7 +24,7 @@ class ZnCompoIsoDiet(IsotopicBoxModel):
         """ Execute the engine and compute the results """
         parameters = {'delta_diet': arange(-0.1, 1.5, 0.5),
                       'coeff_DP': arange(0.9995, 1.0005, 0.0003),
-                      'flux_DP': range(8, 17),
+                      'flux_DP': range(5, 15),
                       'flux_PB': arange(0.01, 0.1, 0.03)}
         sweeps = sweep(parameters)
         sweeper = ParamSweeper(path.join(self.result_dir, "sweeps"), sweeps)
@@ -109,7 +109,7 @@ class ZnCompoIsoDiet(IsotopicBoxModel):
             "urine":    {'Delta': 0e0,          'Mass': 1e1},
             "feces":    {'Delta': 0e0,          'Mass': 1e1},
             "muscle":   {'Delta': 0e0,          'Mass': 1.5e3},
-            "bone":     {'Delta': 0.48e0,       'Mass': 7.7e2},
+            "bone":     {'Delta': 0e0,          'Mass': 7.7e2},
             "skin":     {'Delta': 0e0,          'Mass': 1.6e2},
             "kidney":   {'Delta': 0e0,          'Mass': 2e1}
         }
