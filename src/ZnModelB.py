@@ -41,7 +41,6 @@ class ZnModelB(IsotopicBoxModel):
             self.set_boxes(comb['delta_diet'])
             self.set_partcoeff(comb['coeff_DP'])
             Delta = []
-            Flux = []
             Delta = self.initial_state(outdir=comb_dir)
             Delta = self.compute_evolution(Delta, outdir=comb_dir)
             self.final_state(Delta[-1, :], outdir=comb_dir)
