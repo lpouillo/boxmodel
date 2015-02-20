@@ -194,7 +194,6 @@ class IsotopicBoxModel(Engine):
         outfile = outdir + '/evolution.pdf'
         plt.savefig(outfile)
         logger.info('Evolution has been saved to ' + style.emph(outfile))
-        show()
         fig.clf()
         plt.close()
         gc.collect()
