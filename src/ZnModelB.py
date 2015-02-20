@@ -23,9 +23,7 @@ class ZnModelB(IsotopicBoxModel):
     def run(self):
         """ Execute the engine and compute the results """
         parameters = {'delta_diet': arange(-0.1, 1.5, 0.5),
-                      'coeff_DP': arange(0.9995, 1.0005, 0.0003),
-                      'flux_DP': 10,
-                      'flux_PB': 0.005}
+                      'coeff_DP': arange(0.9995, 1.0005, 0.0003)}
         sweeps = sweep(parameters)
         sweeper = ParamSweeper(path.join(self.result_dir, "sweeps"), sweeps)
         logger.info('Engine will treat %s models',
@@ -41,9 +39,9 @@ class ZnModelB(IsotopicBoxModel):
             except:
                 pass
             self.set_boxes(comb['delta_diet'])
-            self.set_flux(comb['flux_DP'], comb['flux_PB'])
             self.set_partcoeff(comb['coeff_DP'])
             Delta = []
+            Flux = []
             Delta = self.initial_state(outdir=comb_dir)
             Delta = self.compute_evolution(Delta, outdir=comb_dir)
             self.final_state(Delta[-1, :], outdir=comb_dir)
@@ -61,17 +59,17 @@ class ZnModelB(IsotopicBoxModel):
         logger.info('All combinations have been done, result can be found in '
                     + self.result_dir)
 
-    def set_flux(self, flux_DP, flux_PB):
+    def set_flux(self):
         """Change value"""
         self.Flux = {
-            "diet": {"diet": 0.0, "plasma": flux_DP, "RBC": 0e0,
-                     "liver": 0e0, "urine": 0e0, "feces": 1.5*flux_DP,
+            "diet": {"diet": 0.0, "plasma": 10e0, "RBC": 0e0,
+                     "liver": 0e0, "urine": 0e0, "feces": 1.5*10e0,
                      "muscle": 0e0, "bone": 0e0, "skin": 0e0, "kidney": 0e0},
             "plasma": {"diet": 0.0, "plasma": 0e0, "RBC": 0.18e0,
                        "liver": 2.64e0, "urine": 0e0,
-                       "feces": 0.75 * flux_DP, "muscle": 0.0035e0,
-                       "bone": flux_PB, "skin": 0.125 * flux_DP,
-                       "kidney": 0.625 * flux_DP},
+                       "feces": 0.75 * 10e0, "muscle": 0.0035e0,
+                       "bone": 0,005, "skin": 0.125 * 10e0,
+                       "kidney": 0.625 * 10e0},
             "RBC": {"diet": 0.0, "plasma": 0.18e0, "RBC": 0e0,
                     "liver": 0.0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0,
                     "bone": 0e0, "skin": 0e0, "kidney": 0e0},
@@ -87,14 +85,14 @@ class ZnModelB(IsotopicBoxModel):
             "muscle": {"diet": 0.0, "plasma": 0.0035e0, "RBC": 0e0,
                        "liver": 0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0,
                        "bone": 0e0, "skin": 0e0, "kidney": 0e0},
-            "bone": {"diet": 0.0, "plasma": flux_PB, "RBC": 0e0,
+            "bone": {"diet": 0.0, "plasma": 0.005e0, "RBC": 0e0,
                      "liver": 0e0, "urine": 0e0, "feces": 0e0, "muscle": 0e0,
                      "bone": 0e0, "skin": 0e0, "kidney": 0e0},
             "skin": {"diet": 0.0, "plasma": 0e0, "RBC": 0e0, "liver": 0e0,
                      "urine": 0e0, "feces": 0e0, "muscle": 0e0, "bone": 0e0,
                      "skin": 0e0, "kidney": 0e0},
-            "kidney": {"diet": 0.0, "plasma": 0.5 * flux_DP, "RBC": 0e0,
-                       "liver": 0e0, "urine": 0.125 * flux_DP,
+            "kidney": {"diet": 0.0, "plasma": 0.5 * 10e0, "RBC": 0e0,
+                       "liver": 0e0, "urine": 0.125 * 10e0,
                        "feces": 0e0, "muscle": 0e0, "bone": 0e0, "skin": 0e0,
                        "kidney": 0e0}}
 
