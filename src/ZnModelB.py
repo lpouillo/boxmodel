@@ -23,7 +23,8 @@ class ZnModelB(IsotopicBoxModel):
     def run(self):
         """ Execute the engine and compute the results """
         parameters = {'delta_diet': arange(-0.1, 1.5, 0.5),
-                      'coeff_DP': arange(0.9995, 1.0005, 0.0003)}
+                      'coeff_DP': arange(0.9995, 1.0005, 0.0003),
+                      'flux_DP': arange(10, 11, 1)}
         sweeps = sweep(parameters)
         sweeper = ParamSweeper(path.join(self.result_dir, "sweeps"), sweeps)
         logger.info('Engine will treat %s models',
@@ -58,7 +59,7 @@ class ZnModelB(IsotopicBoxModel):
         logger.info('All combinations have been done, result can be found in '
                     + self.result_dir)
 
-    def set_flux(self):
+    def set_flux(self, flux_DP):
         """Change value"""
         self.Flux = {
             "diet": {"diet": 0.0, "plasma": 10e0, "RBC": 0e0,
