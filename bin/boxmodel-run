@@ -1,0 +1,123 @@
+#!/usr/bin/env python
+
+from ConfigParser import ConfigParser
+from argparse import ArgumentParser
+from collections import OrderedDict 
+from execo import logger
+from execo.log import style
+from boxmodel import IsotopicBoxModel
+#from IsotopicBoxModel import IsotopicBoxModel, linspace
+
+__version__ = 0.2
+
+
+def main():
+    """ """
+    args = set_options()
+    if args.config_file:
+        params, boxes, flux, partcoeff = read_config_file(args.config_file)
+        
+    model = IsotopicBoxModel(params, boxes, flux, partcoeff)
+    engine_args = []
+    if args.outdir:
+        engine_args += ['-c', args.outdir, '-ML']
+
+    model.start(engine_args)
+
+    
+def set_options():
+    """ """
+    prog = __file__
+    description = 'This tool helps '
+    epilog = style.host('Examples:') + \
+        '\nSimple execution \n' + \
+        'Issues/features requests can be reported to ' + \
+        style.emph('https://github.com/lpouillo/boxmodel')
+
+    parser = ArgumentParser(prog=prog,
+                            description=description,
+                            epilog=epilog,
+                            add_help=False)
+    parser.add_argument('config_file',
+                        help="The configuration file defining the model")
+    optrun = parser.add_argument_group(style.log_header("General options"),
+                                         "Define mode and controls I/O.")
+    optrun.add_argument("-h", "--help",
+                        action="help",
+                        help="show this help message and exit")
+    optrun.add_argument('--version',
+                        action='version',
+                        version=__version__)
+    optrun.add_argument('-o', '--outdir',
+                        help="Select the output directory")
+    optlog = optrun.add_mutually_exclusive_group()
+    optlog.add_argument("-q", "--quiet",
+                       action="store_true",
+                       help="Run without printing anything")
+    optlog.add_argument("-v", "--verbose",
+                       action="store_true",
+                       help="Run in verbose mode")
+    args = parser.parse_args()
+    
+    set_loglevel(args.verbose, args.quiet)
+    
+    return args 
+
+def set_loglevel(verbose, quiet):
+    """ """
+    if verbose:
+        logger.setLevel('DEBUG')
+    elif quiet:
+        logger.setLevel('WARN')
+    else:
+        logger.setLevel('INFO')
+    logger.info(style.user2('Welcome to boxmodel %s' % __version__))
+        
+
+def read_config_file(fname=None):
+    """ """
+    
+    logger.info('Reading configuration file %s',
+                style.emph(fname))
+    config = ConfigParser()
+    config.read(fname)
+    
+    # Treating constants parameters
+    if not config.has_section('Constants'):
+        logger.error('You need to define %s section',
+                     style.emph('Constants'))
+        exit()
+    else:
+        params = {}
+        for k, v in config.items('Constants'):
+            params[k] = v
+        
+    # Reading Boxes information
+    Boxes = OrderedDict({box.upper(): {'delta': 0e0, 'mass': 0e0} for box 
+                         in config.get('Boxes', 'names').split(',')})
+    for box, mass in config.items('Mass'):
+        Boxes[box.upper()]['mass'] = float(mass)
+    for box, delta in config.items('Delta'):
+        Boxes[box.upper()]['delta'] = float(delta)
+     
+    # Reading flux information
+    Flux = OrderedDict({box.upper(): OrderedDict({box.upper(): 0 
+                                                  for box in Boxes.keys()} ) 
+                        for box in Boxes.keys()})
+    for boxes, flux in config.items('Flux'):
+        box1, box2 = boxes.upper().split('_')
+        Flux[box1][box2] = flux 
+
+    # Reading partition coeefficents
+    Partcoeff = OrderedDict({box.upper(): OrderedDict({box.upper(): 1e0
+                                                  for box in Boxes.keys()} ) 
+                        for box in Boxes.keys()})
+    for boxes, coeff in config.items('Partcoeff'):
+        box1, box2 = boxes.upper().split('_')
+        Partcoeff[box1][box2] = coeff
+    
+    return params, Boxes, Flux, Partcoeff
+
+
+if __name__ == "__main__":
+    main()
