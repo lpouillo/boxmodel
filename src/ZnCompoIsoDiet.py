@@ -30,11 +30,13 @@ class ZnCompoIsoDiet(IsotopicBoxModel):
         sweeper = ParamSweeper(path.join(self.result_dir, "sweeps"), sweeps)
         logger.info('Engine will treat %s models',
                     style.emph(len(sweeper.get_remaining())))
-
+        total_comb = len(sweeper.get_remaining())
+        i_comb = 0
         while len(sweeper.get_remaining()) > 0:
+            i_comb += 1
             comb = sweeper.get_next()
-            logger.info(style.comb(' Performing new combination ') + '\n%s',
-                        pformat(comb))
+            logger.info(style.comb('Combination %s/%s' % (i_comb, total_comb))
+                        + '\n%s', pformat(comb))
             comb_dir = self.result_dir + '/' + slugify(comb)
             try:
                 mkdir(comb_dir)
