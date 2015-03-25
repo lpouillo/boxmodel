@@ -198,28 +198,31 @@ class IsotopicBoxModel(Engine):
         plt.close()
         gc.collect()
 
-    def peace_flag(self, boxes, param1, param2 ):
+    def peace_flag(self, param1, param2, boxes=None):
         """ Create a contour plot of the boxes final value as a function of two parameters"""
-        logger.info('Drawing contour plot of '+','.join( [ set_style( box, 'log_header') for box in boxes] )+\
-                    ' final Delta for '+set_style(param1, 'emph')+' and '+set_style(param2, 'emph')+' ...')
-        i_box = [ self.Boxes.keys().index(box) for box in boxes]
-        
+        if not boxes:
+            boxes = self.Boxes.keys()
+        logger.info('Drawing contour plot of ' + ','.join([style.log_header(box) for box in boxes] )+\
+                    ' final Delta for '+style.emph(param1)+' and '+style.emph(param2)+' ...')
+        i_box = [self.Boxes.keys().index(box) for box in boxes]
+
         x = self.parameters[param1]
         y = self.parameters[param2]
-        
+
         Delta = []
         for yy in y:
             Delta.append([])
-            for xx in x:    
-                infile = self.result_dir +slugify([param1, xx, param2, yy])+'/Delta.final'
-                
+            for xx in x:
+                infile = self.result_dir + '/' + slugify([param1, xx, param2, yy]) + \
+                '/Delta.final'
+
                 f = open(infile)
                 for i, line in enumerate(f):
                     if i in i_box:
                         vals = line.split(' ')
-                        Delta[y.index(yy)].append( vals[1].rstrip() )
+                        Delta[y.index(yy)].append(vals[1].rstrip())
                 f.close()
-                
+
         plt.contourf(x, y, Delta)
         plt.xlabel(param1)
         plt.ylabel(param2)

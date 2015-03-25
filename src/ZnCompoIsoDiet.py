@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 from pprint import pformat
 from IsotopicBoxModel import IsotopicBoxModel, sweep, ParamSweeper, slugify, \
-    logger, path, mkdir, linspace, style
+    logger, path, mkdir, linspace
 from numpy import arange
 from random import gauss
 from pylab import *
+from execo.log import style
 
 
 class ZnCompoIsoDiet(IsotopicBoxModel):
@@ -22,11 +23,11 @@ class ZnCompoIsoDiet(IsotopicBoxModel):
 
     def run(self):
         """ Execute the engine and compute the results """
-        parameters = {'delta_diet': arange(-0.1, 1.5, 0.5),
+        self.parameters = {'delta_diet': arange(-0.1, 1.5, 0.5),
                       'coeff_DP': arange(0.9995, 1.0005, 0.0003),
                       'flux_DP': range(5, 15),
                       'flux_PB': arange(0.01, 0.1, 0.03)}
-        sweeps = sweep(parameters)
+        sweeps = sweep(self.parameters)
         sweeper = ParamSweeper(path.join(self.result_dir, "sweeps"), sweeps)
         logger.info('Engine will treat %s models',
                     style.emph(len(sweeper.get_remaining())))
@@ -49,10 +50,11 @@ class ZnCompoIsoDiet(IsotopicBoxModel):
             Delta = self.initial_state(outdir=comb_dir)
             Delta = self.compute_evolution(Delta, outdir=comb_dir)
             self.final_state(Delta[-1, :], outdir=comb_dir)
-          
+
             sweeper.done(comb)
             logger.info('Combination done\n')
-
+        self.set_boxes(1)
+        self.peace_flag('delta_diet', 'flux_DP')
         logger.info('All combinations have been done, result can be found in '
                     + self.result_dir)
 
