@@ -11,6 +11,7 @@ This tools released under the GNU Public
 License, version 3 or later.
 '''
 from pprint import pformat
+from string import Template
 from os import path, mkdir, listdir
 from random import gauss
 from execo import configuration
@@ -191,38 +192,54 @@ class IsotopicBoxModel(Engine):
         plt.ylabel(self.delta_name)
         if outdir is None:
             outdir = self.result_dir
-        outfile = outdir + '/evolution.pdf'
+        outfile = outdir + '/evolution.png'
         plt.savefig(outfile)
         logger.info('Evolution has been saved to ' + style.emph(outfile))
         fig.clf()
         plt.close()
         gc.collect()
 
-    def peace_flag(self, param1, param2, boxes=None):
+    def peace_flag(self, param1, param2, boxes=None, **kwargs):
         """ Create a contour plot of the boxes final value as a function of two parameters"""
-        if not boxes:
-            boxes = self.Boxes.keys()
-        logger.info('Drawing contour plot of ' + ','.join([style.log_header(box) for box in boxes] )+\
-                    ' final Delta for '+style.emph(param1)+' and '+style.emph(param2)+' ...')
-        i_box = [self.Boxes.keys().index(box) for box in boxes]
-
         x = self.parameters[param1]
         y = self.parameters[param2]
+        param1 = param1.lower()
+        param2 = param2.lower()
+        if not boxes:
+            boxes = self.Boxes.keys()
+
+        logger.info('Drawing contour plot of ' + ','.join([style.log_header(box) for box in boxes]) +\
+                    ' final Delta for ' + style.emph(param1) + ' and ' + style.emph(param2)+' ...')
+        i_box = [self.Boxes.keys().index(box) for box in boxes]
+
+        print self.parameters.keys()
+        for d in listdir(self.result_dir):
+            if param1 in d:
+                dir_string = '-'.join([e + '-$' + e for e in d.split('-')[0::2]])
+                break
+
+        for key, value in kwargs.iteritems():
+            dir_string = dir_string.replace("$" + key.lower(),
+                                            str(value).replace('.', '').replace('-', ''))
 
         Delta = []
         for yy in y:
             Delta.append([])
             for xx in x:
-                infile = self.result_dir + '/' + slugify([param1, xx, param2, yy]) + \
-                '/Delta.final'
-
-                f = open(infile)
+                infile = dir_string.replace("$" + param1,
+                                            str(xx).replace('.', '').replace('-', ''))
+                infile = infile.replace("$" + param2,
+                                            str(yy).replace('.', '').replace('-', ''))
+                f = open(self.result_dir + '/' + infile + '/Delta.final')
                 for i, line in enumerate(f):
                     if i in i_box:
                         vals = line.split(' ')
+                        print vals
                         Delta[y.index(yy)].append(vals[1].rstrip())
                 f.close()
-
+        print len(x)
+        print len(y)
+        print len(Delta), len(Delta[0])
         plt.contourf(x, y, Delta)
         plt.xlabel(param1)
         plt.ylabel(param2)
@@ -230,4 +247,4 @@ class IsotopicBoxModel(Engine):
         plt.colorbar(fraction=0.1)
 
         plt.show()
-        plt.savefig('test.png')
+        plt.savefig(self.result_dir + '/' + param1 + '_' + param2 + '.png')

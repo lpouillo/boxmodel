@@ -1,5 +1,5 @@
-IsotopicIsotopicBoxModel
-========
+IsotopicBoxModel
+================
 
 A box model written in Python.
 Numerical development is an adaptation of methods described in:
@@ -16,10 +16,10 @@ Klervia Jaouen (http://tel.archives-ouvertes.fr/tel-00781645).
 Installation
 ------------
 Packages requirements
-- python 			2.7
-- numpy 			1.7.1
+- python 		2.7
+- numpy 		1.7.1
 - scipy			0.12
-- matplotlib			1.2.1
+- matplotlib    1.2.1
 - pydot			1.0.28
 - execo			2.4.3
 
