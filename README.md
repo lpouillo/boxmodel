@@ -51,4 +51,6 @@ You can run the demos located in src/ directory by typing:
     python ZnDietRatio.py  -ML
 
 
-
+Contributors
+------------
+Theo Tacail
